@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "weather-agent"
+version = "0.1.0"
+description = "Weather Agent"
+authors = ["Kshipra Dhame <kshipra.dhame@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+requests = "^2.32.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

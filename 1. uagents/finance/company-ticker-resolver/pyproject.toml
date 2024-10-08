@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "company-ticker-resolver-agent"
+version = "0.1.0"
+description = "This agent helps you to get ticker symbol for the given company name"
+authors = ["abhifetch <abhi.gangani@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+openai = "^1.45.0"
+requests = "^2.32.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

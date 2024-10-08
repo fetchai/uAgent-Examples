@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "financial-news-sentiment-agent"
+version = "0.1.0"
+description = "This agent helps you to get financial news and their financial sentiments of given ticker symbol"
+authors = ["abhifetch <abhi.gangani@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+requests = "^2.32.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

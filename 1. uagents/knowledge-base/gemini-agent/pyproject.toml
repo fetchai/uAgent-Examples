@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "gemini-agent"
+version = "0.1.0"
+description = ""
+authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
+readme = "README.md"
+packages = [{ include = "gemini" }]
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+google-generativeai = "^0.7.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

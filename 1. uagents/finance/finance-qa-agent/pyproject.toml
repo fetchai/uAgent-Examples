@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "finance-qa-agent"
+version = "0.1.0"
+description = ""
+authors = ["Beniamino Daniele <beniamino.daniele@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+openai = "^1.16.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
