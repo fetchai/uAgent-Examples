@@ -8,7 +8,7 @@ from schemas import Flight, FlightsSearchRequest
 from tenacity import retry, stop_after_attempt, wait_exponential
 from uagents.storage import StorageAPI
 
-RAPIDAPI_API_KEY = os.environ.get("RAPIDAPI_API_KEY", "")
+RAPIDAPI_API_KEY = os.environ.get("RAPIDAPI_API_KEY")
 
 assert RAPIDAPI_API_KEY, "RAPIDAPI_API_KEY environment variable is missing from .env"
 

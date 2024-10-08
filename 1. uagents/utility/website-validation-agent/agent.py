@@ -10,7 +10,7 @@ from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 from website_utils import find_broken_links
 
-AGENT_SEED = os.getenv("AGENT_SEED", "<website_validation_agent>")
+AGENT_SEED = os.getenv("AGENT_SEED")
 
 PORT = 8000
 agent = Agent(

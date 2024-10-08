@@ -6,7 +6,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "super secret seed for the open charge map agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 OCM_API_KEY = os.getenv("OCM_API_KEY")
 if not OCM_API_KEY:
     raise ValueError("You need to provide an API key for OpenChargeMap")

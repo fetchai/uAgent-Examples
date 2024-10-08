@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "website-scraper-agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 
 
 class WebsiteScraperRequest(Model):

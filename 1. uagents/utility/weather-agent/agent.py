@@ -5,7 +5,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "weather-agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 API_KEY = os.getenv("WEATHERAPI_KEY")
 
 

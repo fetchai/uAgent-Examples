@@ -6,7 +6,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage, Field
 
-AGENT_SEED = os.getenv("AGENT_SEED", "openai-translator-test-agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 
 
 class TranslationRequest(Model):

@@ -5,7 +5,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "<finbert-sentiment-agent>")
+AGENT_SEED = os.getenv("AGENT_SEED")
 
 HF_BEARER_TOKEN = os.getenv("HF_BEARER_TOKEN")
 if not HF_BEARER_TOKEN:

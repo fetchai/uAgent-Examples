@@ -6,7 +6,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "<geoapi-car-park-agent>")
+AGENT_SEED = os.getenv("AGENT_SEED")
 GEOAPIFY_KEY = os.getenv("GEOAPIFY_KEY")
 URL = "https://api.geoapify.com/v2/places"
 

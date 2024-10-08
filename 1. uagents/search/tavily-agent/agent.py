@@ -5,9 +5,9 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "<tavily-search-agent-seed>")
-TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "<your-tavily-api-key>")
-if TAVILY_API_KEY == "<your-tavily-api-key>":
+AGENT_SEED = os.getenv("AGENT_SEED")
+TAVILY_API_KEY = os.getenv("TAVILY_API_KEY")
+if not TAVILY_API_KEY:
     raise ValueError("Please provide your Tavily API key.")
 
 PORT = 8000

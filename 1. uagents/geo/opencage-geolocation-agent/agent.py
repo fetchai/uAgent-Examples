@@ -5,7 +5,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "geolocation-agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 OPENCAGE_API_KEY = os.getenv("OPENCAGE_API_KEY")
 
 if OPENCAGE_API_KEY is None:

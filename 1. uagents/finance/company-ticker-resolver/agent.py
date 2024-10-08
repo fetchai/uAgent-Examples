@@ -7,7 +7,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "ticker-agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 

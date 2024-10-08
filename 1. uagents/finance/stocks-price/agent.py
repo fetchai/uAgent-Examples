@@ -5,7 +5,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "stocks-price-agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
 if ALPHAVANTAGE_API_KEY is None:

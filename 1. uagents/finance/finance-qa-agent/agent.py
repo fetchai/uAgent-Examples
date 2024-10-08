@@ -5,7 +5,7 @@ from quota import RateLimiter
 from uagents import Agent, Context, Model, Protocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED", "finance_qa_agent")
+AGENT_SEED = os.getenv("AGENT_SEED")
 
 PORT = 8000
 agent = Agent(

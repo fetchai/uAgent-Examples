@@ -14,9 +14,11 @@ from quota import RateLimiter
 from uagents import Agent, Context, Protocol
 from uagents.models import ErrorMessage
 
+AGENT_SEED = os.getenv("AGENT_SEED")
+
 agent = Agent(
     name="GooglePlacesAgent",
-    seed="Google Places Agent secret very crypto much safe 3",
+    seed=AGENT_SEED,
 )
 
 proto = Protocol(name="Points-Of-Interest-Search", version="0.1.0")
