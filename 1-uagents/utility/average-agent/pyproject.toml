@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "average-agent"
+version = "0.1.0"
+description = "He's just an average agent and a bit mean."
+authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
