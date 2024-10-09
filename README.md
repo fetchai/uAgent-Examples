@@ -9,10 +9,10 @@ Home for the source code of uAgents, uAgent Solutions, and applications built us
 
 Source codes are categorised per the following folder structure:
 
-- 🤖 `1. uagent`: Individual uAgents
-- 🔗 `2. solutions`: Collections of uAgents that together achieve an objective
-- 🖥️ `3. applications`: Applications that involve uAgents
-- 👤 `4. community`: uAgents submitted by the community
+- 🤖 `1-uagent`: Individual uAgents
+- 🔗 `2-solutions`: Collections of uAgents that together achieve an objective
+- 🖥️ `3-applications`: Applications that involve uAgents
+- 👤 `4-community`: uAgents submitted by the community
 
 ## ✨ Contributing
 
