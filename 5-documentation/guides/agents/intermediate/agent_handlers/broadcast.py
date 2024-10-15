@@ -1,4 +1,5 @@
 from uagents import Agent, Bureau, Context, Model, Protocol
+from uagents.setup import fund_agent_if_low
 
 # create agents
 # alice and bob will support the protocol
@@ -7,6 +8,9 @@ alice = Agent(name="alice", seed="alice recovery phrase")
 bob = Agent(name="bob", seed="bob recovery phrase")
 charles = Agent(name="charles", seed="charles recovery phrase")
 
+fund_agent_if_low(alice.wallet.address())
+fund_agent_if_low(bob.wallet.address())
+fund_agent_if_low(charles.wallet.address())
 
 class BroadcastExampleRequest(Model):
     pass
