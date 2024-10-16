@@ -5,7 +5,7 @@ from uagents import Agent, Context, Protocol, Model
 from langchain_community.utilities.google_jobs import GoogleJobsAPIWrapper
 
 os.environ["SERPAPI_API_KEY"] = "xxxx"  # use serp API
-AGENT_MAILBOX_KEY = "xxxxx"  # use actual utilising-the-mailbox key
+AGENT_MAILBOX_KEY = "xxxxx"  # use actual mailbox key
 
 
 # Extend your protocol with Wikipedia data fetching

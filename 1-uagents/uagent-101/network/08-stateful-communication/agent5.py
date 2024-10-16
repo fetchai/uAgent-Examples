@@ -1,7 +1,7 @@
 """
 Specific agent example for the Agentverse chit-chat dialogue.
 
-See python/examples/17-stateful-interactions_and_interval_task/dialogues/agentverse_chitchat.py
+See python/examples/17-stateful-communication/dialogues/agentverse_chitchat.py
 for the dialogue implementation.
 """
 

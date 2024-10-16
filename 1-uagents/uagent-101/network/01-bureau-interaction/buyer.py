@@ -13,7 +13,7 @@ class OfferResponse(Model):
 
 BUYER_SEED = "put_buyer_seed_phrase_here"
 
-SELLER_ADDRESSES = ["list all seller getting-uagent-address here"]
+SELLER_ADDRESSES = ["list all seller addresses here"]
 
 buyer = Agent(
     name="buyer",
