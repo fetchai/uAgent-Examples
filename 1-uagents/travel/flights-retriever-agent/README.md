@@ -2,6 +2,8 @@
 
 ![domain:travel](https://img.shields.io/badge/travel-3D8BD3?style=flat&logo=data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iOSIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgOSA4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNNy41MzEyNSAzQzguMDYyNSAzIDkgMy40NTMxMiA5IDRDOSA0LjU2MjUgOC4wNjI1IDUgNy41MzEyNSA1SDUuNzAzMTJMNC4xNDA2MiA3Ljc1QzQuMDQ2ODggNy45MDYyNSAzLjg3NSA4IDMuNzAzMTIgOEgyLjgyODEyQzIuNjU2MjUgOCAyLjUzMTI1IDcuODQzNzUgMi41NzgxMiA3LjY4NzVMMy4zNDM3NSA1SDEuNzVMMS4wNjI1IDUuOTA2MjVDMS4wMTU2MiA1Ljk2ODc1IDAuOTUzMTI1IDYgMC44NzUgNkgwLjIxODc1QzAuMDkzNzUgNiAwIDUuOTA2MjUgMCA1Ljc4MTI1QzAgNS43NjU2MiAwIDUuNzUgMCA1LjczNDM4TDAuNSA0TDAgMi4yODEyNUMwIDIuMjY1NjIgMCAyLjI1IDAgMi4yMTg3NUMwIDIuMTA5MzggMC4wOTM3NSAyIDAuMjE4NzUgMkgwLjg3NUMwLjk1MzEyNSAyIDEuMDE1NjIgMi4wNDY4OCAxLjA2MjUgMi4xMDkzOEwxLjc1IDNIMy4zNDM3NUwyLjU3ODEyIDAuMzI4MTI1QzIuNTMxMjUgMC4xNzE4NzUgMi42NTYyNSAwIDIuODI4MTIgMEgzLjcwMzEyQzMuODc1IDAgNC4wNDY4OCAwLjEwOTM3NSA0LjE0MDYyIDAuMjY1NjI1TDUuNzAzMTIgM0g3LjUzMTI1WiIgZmlsbD0id2hpdGUiLz4KPC9zdmc+Cg==)
 [![link to source code](https://img.shields.io/badge/Source%20Code-E8ECF1?style=flat&logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB3aWR0aD0iOCIgaGVpZ2h0PSI4IiB2aWV3Qm94PSIwIDAgOCA4IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBkPSJNNCAwLjA5ODk5OUMxLjc5IDAuMDk4OTk5IDAgMS44OSAwIDQuMDk5QzAgNS44NjY2NyAxLjE0NiA3LjM2NTY2IDIuNzM1IDcuODk0QzIuOTM1IDcuOTMxNjYgMy4wMDgzMyA3LjgwOCAzLjAwODMzIDcuNzAxNjZDMy4wMDgzMyA3LjYwNjY2IDMuMDA1IDcuMzU1IDMuMDAzMzMgNy4wMjE2N0MxLjg5MDY3IDcuMjYzIDEuNjU2IDYuNDg1IDEuNjU2IDYuNDg1QzEuNDc0IDYuMDIzMzMgMS4yMTEgNS45IDEuMjExIDUuOUMwLjg0ODY2NyA1LjY1MiAxLjIzOSA1LjY1NyAxLjIzOSA1LjY1N0MxLjY0MDY3IDUuNjg1IDEuODUxNjcgNi4wNjkgMS44NTE2NyA2LjA2OUMyLjIwODMzIDYuNjgwNjcgMi43ODggNi41MDQgMy4wMTY2NyA2LjQwMTY2QzMuMDUyNjcgNi4xNDMgMy4xNTU2NyA1Ljk2NjY3IDMuMjcgNS44NjY2N0MyLjM4MTY3IDUuNzY2NjcgMS40NDggNS40MjI2NyAxLjQ0OCAzLjg5QzEuNDQ4IDMuNDUzMzMgMS42MDMgMy4wOTY2NyAxLjg1OTY3IDIuODE2NjdDMS44MTQ2NyAyLjcxNTY3IDEuNjc5NjcgMi4zMDkgMS44OTQ2NyAxLjc1OEMxLjg5NDY3IDEuNzU4IDIuMjI5NjcgMS42NTA2NyAyLjk5NDY3IDIuMTY4QzMuMzE0NjcgMi4wNzkgMy42NTQ2NyAyLjAzNSAzLjk5NDY3IDIuMDMzQzQuMzM0NjcgMi4wMzUgNC42NzQ2NyAyLjA3OSA0Ljk5NDY3IDIuMTY4QzUuNzU0NjcgMS42NTA2NyA2LjA4OTY3IDEuNzU4IDYuMDg5NjcgMS43NThDNi4zMDQ2NyAyLjMwOSA2LjE2OTY3IDIuNzE1NjcgNi4xMjk2NyAyLjgxNjY3QzYuMzg0NjcgMy4wOTY2NyA2LjUzOTY3IDMuNDUzMzMgNi41Mzk2NyAzLjg5QzYuNTM5NjcgNS40MjY2NyA1LjYwNDY3IDUuNzY1IDQuNzE0NjcgNS44NjMzM0M0Ljg1NDY3IDUuOTgzMzMgNC45ODQ2NyA2LjIyODY2IDQuOTg0NjcgNi42MDMzM0M0Ljk4NDY3IDcuMTM4NjYgNC45Nzk2NyA3LjU2ODY3IDQuOTc5NjcgNy42OTg2N0M0Ljk3OTY3IDcuODAzNjcgNS4wNDk2NyA3LjkyODY3IDUuMjU0NjcgNy44ODg2N0M2Ljg1NSA3LjM2NCA4IDUuODY0IDggNC4wOTlDOCAxLjg5IDYuMjA5IDAuMDk4OTk5IDQgMC4wOTg5OTlaIiBmaWxsPSIjNTU2NTc4Ii8%2BCjwvc3ZnPgo%3D)](https://github.com/fetchai/uAgent-Examples/tree/main/1-uagents/travel/flights-retriever-agent)
+[![live](https://img.shields.io/badge/Live-8A2BE2?logo=elixir
+)](https://agentverse.ai/)
 
 This agent is designed to provide all available **one-way direct flights** based on the specific dates, cities and number of people provided by the user.
 
@@ -68,6 +70,91 @@ FlightsSearchResponse(
 )
 ```
 
-## Reference and usage example
+# Usage Example
 
-Click on the following link to get to the hosted Agent with usage instructions: [Flights Retriever Agent](https://agentverse.ai/)
+```python
+from datetime import datetime
+
+from uagents import Agent, Context, Field, Model
+
+
+class FlightsSearchRequest(Model):
+    origin: str = Field(
+        description="This field is the airport IATA code for of the airport from where the user wants to fly from. This should be airport IATA code. IATA airport code is a three-character alphanumeric geocode.",
+    )
+    destination: str = Field(
+        description="This field is the airport IATA code of the destination airport! This should be airport IATA code. IATA airport code is a three-character alphanumeric geocode."
+    )
+    date: datetime = Field(description="Contains the date of flying out.")
+    persons: int = Field(description="Describes how many persons are going to fly.")
+    currency: str = Field(
+        default="USD",
+        description="Currency, ISO 4217, in which you want to get information back (e.g.: EUR, GBP, USD, CHF...).",
+    )
+
+
+class Flight(Model):
+    price: float
+    price_formatted: str
+    origin: str
+    destination: str
+    departure_time: str
+    arrival_time: str
+    airline: str
+
+
+class FlightsSearchResponse(Model):
+    flights: list[Flight]
+
+
+agent = Agent()
+
+flights_agent_address = "<deployed_agent_address>"
+
+
+msg_request = FlightsSearchRequest(
+    origin="EDI",
+    destination="BOS",
+    date="2024-10-24T10:20",
+    persons=2,
+    currency="GBP",
+)
+
+
+@agent.on_event("startup")
+async def agent_test_handler(ctx: Context):
+    await ctx.send(flights_agent_address, msg_request)
+
+
+@agent.on_message(model=FlightsSearchResponse)
+async def show_results(ctx: Context, sender: str, msg: FlightsSearchResponse):
+    ctx.logger.info(f"Heyy! We got response from '{sender[-10:]}'")
+    ctx.logger.info(msg)
+
+
+if __name__ == "__main__":
+    agent.run()
+
+```
+
+### Local Agent
+
+1. Install the necessary packages:
+
+   ```bash
+    pip install uagents
+   ```
+
+2. To interact with this agent from a local agent instead, replace `agent = Agent()` in the above with:
+
+   ```python
+   agent = Agent(
+       name="user",
+       endpoint="http://localhost:8000/submit",
+   )
+   ```
+
+3. Run the agent:
+   ```bash
+   python agent.py
+   ```
