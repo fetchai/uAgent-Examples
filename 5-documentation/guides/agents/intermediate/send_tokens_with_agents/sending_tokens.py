@@ -2,16 +2,13 @@ from uagents import Agent, Bureau, Context, Model
 from uagents.network import wait_for_tx_to_complete
 from uagents.setup import fund_agent_if_low
 
-
 class PaymentRequest(Model):
     wallet_address: str
     amount: int
     denom: str
 
-
 class TransactionInfo(Model):
     tx_hash: str
-
 
 AMOUNT = 100
 DENOM = "atestfet"
@@ -21,7 +18,6 @@ bob = Agent(name="bob", seed="bob secret phrase")
 
 fund_agent_if_low(bob.wallet.address(), min_balance=AMOUNT)
 
-
 @alice.on_interval(period=10.0)
 async def request_funds(ctx: Context):
     await ctx.send(
@@ -30,7 +26,6 @@ async def request_funds(ctx: Context):
             wallet_address=str(alice.wallet.address()), amount=AMOUNT, denom=DENOM
         ),
     )
-
 
 @alice.on_message(model=TransactionInfo)
 async def confirm_transaction(ctx: Context, sender: str, msg: TransactionInfo):
@@ -44,7 +39,6 @@ async def confirm_transaction(ctx: Context, sender: str, msg: TransactionInfo):
     ):
         ctx.logger.info(f"Transaction was successful: {coin_received}")
 
-
 @bob.on_message(model=PaymentRequest, replies=TransactionInfo)
 async def send_payment(ctx: Context, sender: str, msg: PaymentRequest):
     ctx.logger.info(f"Received payment request from {sender}: {msg}")
@@ -56,7 +50,6 @@ async def send_payment(ctx: Context, sender: str, msg: PaymentRequest):
 
     # send the tx hash so alice can confirm
     await ctx.send(alice.address, TransactionInfo(tx_hash=transaction.tx_hash))
-
 
 bureau = Bureau()
 bureau.add(alice)

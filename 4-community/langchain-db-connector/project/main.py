@@ -3,7 +3,7 @@ Dynamic / intelligent database connector and query builder
 
 This agent integration will provide you with the means to configure databases
 and query them using a natural language prompt. In addition to the normal
-agent to agent communication the agent will also be accessible to other agents
+agent to agent interactions_and_interval_task the agent will also be accessible to other agents
 via the AI Engine or DeltaV.
 The LLM (Language Learning Model) is used to process the natural language
 and 1. decide which database to query and 2. how to build the actual query.
@@ -85,7 +85,7 @@ async def startup_routine(ctx: Context):
 
 @agent.on_message(RequestData, replies={LlmResponse})
 async def handle_agent_message(ctx: Context, sender: str, msg: RequestData):
-    """Message handler for the agent to agent communication."""
+    """Message handler for the agent to agent interactions_and_interval_task."""
     ctx.logger.info(
         f"Received message from other agent (...{sender[:10]}): {msg.prompt}"
     )
@@ -100,7 +100,7 @@ db_deltav_protocol = Protocol(name="deltav", version="0.1.0")
 
 @db_deltav_protocol.on_message(DatabasePrompt, replies=UAgentResponse)
 async def handle_deltav_message(ctx: Context, sender: str, msg: DatabasePrompt):
-    """Message handler for DeltaV communication."""
+    """Message handler for DeltaV interactions_and_interval_task."""
     ctx.logger.info(f"Received message from DeltaV: {msg.prompt}")
     if msg.prompt:
         res = query_langchain(msg.prompt)

@@ -8,6 +8,9 @@ class Message(Model):
 # First generate a secure seed phrase (e.g. https://pypi.org/project/mnemonic/)
 SEED_PHRASE = "put_your_seed_phrase_here"
 
+# Copy the address shown below
+print(f"Your agent's address is: {agent.address}")
+
 # Now go to https://agentverse.ai, register your agent in the Mailroom by providing the address you just copied.
 # Then, copy the agent's mailbox key and insert it here below inline
 AGENT_MAILBOX_KEY = "put_your_AGENT_MAILBOX_KEY_here"
@@ -18,9 +21,6 @@ agent = Agent(
     seed=SEED_PHRASE,
     mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
 )
-
-# Copy the address shown below
-print(f"Your agent's address is: {agent.address}")
 
 
 @agent.on_message(model=Message, replies={Message})

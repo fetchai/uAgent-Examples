@@ -1,13 +1,10 @@
 from uagents import Agent, Context, Model
 
-
 class TestRequest(Model):
     message: str
 
-
 class Response(Model):
     text: str
-
 
 # Initialize the agent with its configuration.
 agent = Agent(
@@ -17,13 +14,11 @@ agent = Agent(
     endpoint="http://localhost:8001/submit",
 )
 
-
 @agent.on_event("startup")
 async def startup(ctx: Context):
     ctx.logger.info(f"Starting up {agent.name}")
     ctx.logger.info(f"With address: {agent.address}")
     ctx.logger.info(f"And wallet address: {agent.wallet.address()}")
-
 
 # Decorator to handle incoming queries.
 @agent.on_query(model=TestRequest, replies={Response})
@@ -34,7 +29,6 @@ async def query_handler(ctx: Context, sender: str, _query: TestRequest):
         await ctx.send(sender, Response(text="success"))
     except Exception:
         await ctx.send(sender, Response(text="fail"))
-
 
 # Main execution block to run the agent.
 if __name__ == "__main__":

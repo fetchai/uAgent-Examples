@@ -17,6 +17,7 @@ async def agent_query(req):
         return data["text"]
     return response
 
+
 app = FastAPI()
 
 @app.get("/")

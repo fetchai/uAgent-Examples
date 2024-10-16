@@ -1,7 +1,7 @@
 """
 Specific dialogue class for the Agentverse chit-chat dialogue.
 
-See python/examples/17-stateful-communication/agent5.py for a usage example.
+See python/examples/17-stateful-interactions_and_interval_task/agent5.py for a usage example.
 """
 
 from typing import Type
