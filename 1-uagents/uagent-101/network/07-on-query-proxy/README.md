@@ -9,7 +9,7 @@ uvicorn proxy:app
 
 2. Run the agent:
 ```bash
-python agent.py
+python simple_function.py
 ```
 
 3. Query the agent via the proxy:

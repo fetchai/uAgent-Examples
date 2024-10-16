@@ -156,9 +156,9 @@ Response: `There is 1 mailbox in the database.`
 docker build -t hackathon-sample .
 docker run -p 5499:5432 hackathon-sample
 
-# Build and run the mailbox mock db:
-docker build -t hackathon-mailbox-sample -f Dockerfile-mailbox .
-docker run -p 5498:5432 hackathon-mailbox-sample
+# Build and run the utilising-the-mailbox mock db:
+docker build -t hackathon-utilising-the-mailbox-sample -f Dockerfile-utilising-the-mailbox .
+docker run -p 5498:5432 hackathon-utilising-the-mailbox-sample
 ```
 
 The initial connection settings of the databases are configured [here](./project/databases.json_). If you want to use other sql databases, just change the settings there. Make sure that you also provide a detailed description of the purpose of the database, as the LLM will pick the correct databsae based on this description.

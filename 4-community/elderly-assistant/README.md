@@ -57,7 +57,7 @@ To set up the Elderly Assistant agent, follow these steps:
 To activate the Elderly Assistant agent:
 
 ```bash
-poetry run python agent.py
+poetry run python simple_function.py
 ```
 
 This command initializes the agent, setting up the necessary protocols for call and visitor analysis, and begins monitoring for incoming requests.

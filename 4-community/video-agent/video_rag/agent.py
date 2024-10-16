@@ -14,11 +14,11 @@ print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
 
 
 # Then go to https://agentverse.ai, register your agent in the Mailroom
-# and copy the agent's mailbox key
+# and copy the agent's utilising-the-mailbox key
 AGENT_MAILBOX_KEY = os.getenv("AGENT_MAILBOX_KEY", None)
 assert (
     AGENT_MAILBOX_KEY is not None
-), "AGENT_MAILBOX_KEY environment variable is not set! Please set it to your agent's mailbox key!"
+), "AGENT_MAILBOX_KEY environment variable is not set! Please set it to your agent's utilising-the-mailbox key!"
 
 
 # Now your agent is ready to join the agentverse!
