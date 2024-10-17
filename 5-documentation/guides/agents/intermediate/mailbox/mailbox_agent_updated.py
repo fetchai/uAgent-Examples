@@ -1,16 +1,22 @@
-from uagents import Agent, Bureau, Context, Model
-from datetime import datetime
+from uagents import Agent, Context, Model
 
 class Message(Model):
     message: str
 
-agent_2 = Agent(name="agent_2", seed="agent_2 recovery phrase", port=8001, endpoint="http://localhost:8001/submit")
+AGENT_MAILBOX_KEY = "put_your_AGENT_MAILBOX_KEY_here"
+SEED_PHRASE = "put_your_seed_phrase_here"
 
-ALICE_ADDRESS = "add_address_of_alice_agent"
+# Now your agent is ready to join the agentverse!
+agent = Agent(
+    name="alice",
+    seed=SEED_PHRASE,
+    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+)
 
-@agent_2.on_interval(period=3.0)
-async def send_message(ctx: Context):
-    await ctx.send(ALICE_ADDRESS, Message(message=f"hello {datetime.today().date()}"))
+@agent.on_message(model=Message, replies={Message})
+async def handle_message(ctx: Context, sender: str, msg: Message):
+    ctx.logger.info(f"Received message from {sender}: {msg.message}")
+
 
 if __name__ == "__main__":
     agent.run()
