@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "fetchswarm"
+version = "0.1.0"
+description = ""
+authors = ["None"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python =  ">=3.11,<3.13"
+swarm = {git = "ssh://git@github.com/openai/swarm.git"}
+uagents = "^0.16.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
