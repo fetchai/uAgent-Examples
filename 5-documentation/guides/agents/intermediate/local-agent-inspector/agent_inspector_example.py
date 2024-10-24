@@ -10,7 +10,7 @@ bob = Agent(
     seed="BobSecretPhrase",
     endpoint=["http://127.0.0.1:8001/submit"],
 )
-
+ 
 print(f"Your agent's address is: {bob.address}")
 
 
