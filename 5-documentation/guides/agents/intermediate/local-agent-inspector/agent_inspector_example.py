@@ -10,7 +10,7 @@ bob = Agent(
     name="Bob",
     port=8001,
     seed="BobSecretPhrase",
-    endpoint=["http://127.0.0.1/:8001/submit"],
+    endpoint=["http://127.0.0.1:8001/submit"],
 )
 
 fund_agent_if_low(bob.wallet.address())
