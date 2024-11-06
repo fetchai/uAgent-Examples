@@ -1,6 +1,6 @@
 from uagents import Agent, Context
 
-agent = Agent()
+agent = Agent(name="Hosted")
 
 global_counter = 0
 

@@ -13,6 +13,8 @@ agent = Agent(
     mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
 )
 
+print(f"Your agent's address is: {agent.address}")
+
 @agent.on_message(model=Message, replies={Message})
 async def handle_message(ctx: Context, sender: str, msg: Message):
     ctx.logger.info(f"Received message from {sender}: {msg.message}")
