@@ -1,7 +1,6 @@
 from uagents import Agent, Context, Protocol
 from messages.requests import RagRequest
 from ai_engine import UAgentResponse
-from uagents.setup import fund_agent_if_low
 
 QUESTION = "How to install uagents using pip"
 URL = "https://fetch.ai/docs/guides/agents/installing-uagent"
@@ -16,7 +15,7 @@ user = Agent(
     port=8000,
     endpoint=["http://127.0.0.1:8000/submit"],
 )
-fund_agent_if_low(user.wallet.address())
+
 rag_user = Protocol("LangChain RAG user")
 
 

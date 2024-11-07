@@ -15,7 +15,6 @@ from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import CohereRerank
 from ai_engine import UAgentResponse, UAgentResponseType
 import nltk
-from uagents.setup import fund_agent_if_low
 
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
@@ -29,7 +28,6 @@ agent = Agent(
     mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
 )
 
-fund_agent_if_low(agent.wallet.address())
 
 docs_bot_protocol = Protocol("DocsBot")
 
