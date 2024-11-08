@@ -15,3 +15,7 @@ __pycache__
 # Editors
 .vscode
 .idea
+
+**/*.ipynb_checkpoints/
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
