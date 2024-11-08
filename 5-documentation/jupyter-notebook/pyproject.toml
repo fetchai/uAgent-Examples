@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "jp"
+version = "0.1.0"
+description = ""
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "3.11"
+uagents = "^0.17.1"
+notebook = "^7.2.2"
+jupyter = "^1.1.1"
+black = "^24.10.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
