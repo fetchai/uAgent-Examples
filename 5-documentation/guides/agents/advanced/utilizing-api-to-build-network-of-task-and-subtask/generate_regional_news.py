@@ -67,4 +67,4 @@ async def on_generate_news_request(ctx: Context, sender: str, msg: GenerateNews)
 
 
 # Include the Generate Regional News protocol in your agent
-agent.include(generate_news_protocol)
+agent.include(generate_news_reg_protocol)
