@@ -1,0 +1,70 @@
+.App {
+  text-align: center;
+  }
+.search-container, .news-feed, .stock-info {
+  margin: 20px;
+  padding: 10px;
+  }
+input[type="text"] {
+  margin-right: 10px;
+  }
+.news-feed div {
+  margin: 5px;
+  }
+button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  }
+button:hover {
+  opacity: 0.8;
+  }
+.news-feed {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+  color: black;
+  text-decoration: none;
+  }
+.news-feed a:hover {
+  color: black; 
+  text-decoration: underline;
+  } 
+.news-feed ul {
+  list-style-type: none;
+  padding: 0;
+  }
+.news-feed li {
+  margin-bottom: 10px;
+  padding: 5px;
+  background-color: #fff;
+  border-radius: 4px;
+  color: black; /* Black color for text */
+  text-align: left;
+  }
+.sentiment-block {
+  margin-top: 30px;
+  padding: 10px;
+  background-color: #dff0d8; 
+  color: #3c763d; 
+  border-radius: 5px;
+  font-size: 20px;
+  text-align: center;
+  }
+.sentiment-block.neutral {
+  background-color: #fcf8e3;
+  color: #8a6d3b; 
+  }
+.sentiment-block.negative {
+  background-color: #f2dede; 
+  color: #a94442; 
+  }
+.title-bar {
+  background-color: #007BFF; 
+  color: white;
+  padding: 10px 0;
+  font-size: 24px;
+  }
