@@ -17,4 +17,4 @@ async def send_message(ctx: Context):
 
 
 if __name__ == "__main__":
-    agent.run()
+    agent_2.run()

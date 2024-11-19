@@ -1,4 +1,3 @@
-from uagents.setup import fund_agent_if_low
 from uagents import Agent, Context, Protocol, Model
 import random
 from uagents import Field
@@ -11,8 +10,6 @@ agent = Agent(
     seed="RANDOM STRINGS",
     endpoint=["http://YOUR_IP:6145/submit"],
 )
-
-fund_agent_if_low(agent.wallet.address())
 
 
 @agent.on_event("startup")

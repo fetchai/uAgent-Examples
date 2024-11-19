@@ -1,5 +1,4 @@
 from uagents import Agent, Context, Model
-from uagents.setup import fund_agent_if_low
 
 class Message(Model):
     message: str
@@ -12,8 +11,6 @@ sigmar = Agent(
     seed="sigmar secret phrase",
     endpoint=["http://127.0.0.1:8000/submit"],
 )
-
-fund_agent_if_low(sigmar.wallet.address())
 
 @sigmar.on_interval(period=2.0)
 async def send_message(ctx: Context):

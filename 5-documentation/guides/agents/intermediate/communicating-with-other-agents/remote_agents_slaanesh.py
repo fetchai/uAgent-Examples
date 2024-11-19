@@ -1,4 +1,3 @@
-from uagents.setup import fund_agent_if_low
 from uagents import Agent, Context, Model
 
 class Message(Model):
@@ -10,8 +9,6 @@ slaanesh = Agent(
     seed="slaanesh secret phrase",
     endpoint=["http://127.0.0.1:8001/submit"],
 )
-
-fund_agent_if_low(slaanesh.wallet.address())
 
 @slaanesh.on_message(model=Message)
 async def message_handler(ctx: Context, sender: str, msg: Message):
