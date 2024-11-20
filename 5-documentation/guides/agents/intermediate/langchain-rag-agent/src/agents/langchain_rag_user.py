@@ -2,13 +2,14 @@ from uagents import Agent, Context, Protocol
 from messages.requests import RagRequest
 from ai_engine import UAgentResponse
 
+
 QUESTION = "How to install uagents using pip"
 URL = "https://fetch.ai/docs/guides/agents/installing-uagent"
 DEEP_READ = (
-    "no"
+    "no"  # it means nested pages at the URL won't be parsed, just the actual URL
 )
 
-RAG_AGENT_ADDRESS = "YOUR_LANGCHAIN_RAG_AGENT_ADDRESS"
+RAG_AGENT_ADDRESS = "agent1qw4c6c9jswnhpwe0askm53t5d3wulw2k5n8jwp4ca0zf72a3mvqxjtfjxsy"
 
 user = Agent(
     name="langchain_rag_user",
@@ -22,7 +23,7 @@ rag_user = Protocol("LangChain RAG user")
 @rag_user.on_interval(60, messages=RagRequest)
 async def ask_question(ctx: Context):
     ctx.logger.info(
-        f"Asking RAG agent to answer {QUESTION} based on document located at {URL}, reading nested pages too: {DEEP_READ}"
+        f"Asking RAG agent to answer {QUESTION} based on document located at {URL}, readin nested pages too: {DEEP_READ}"
     )
     await ctx.send(
         RAG_AGENT_ADDRESS, RagRequest(question=QUESTION, url=URL, deep_read=DEEP_READ)
