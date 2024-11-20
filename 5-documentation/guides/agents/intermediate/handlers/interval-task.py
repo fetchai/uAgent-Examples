@@ -1,6 +1,6 @@
 from uagents import Agent, Context
 
-agent = Agent(name="alice", seed="alice recovery phrase")
+agent = Agent(name="alice", seed="alice recovery phrase", port=8000, endpoint=["http://localhost:8000/submit"])
 
 @agent.on_event("startup")
 async def introduce_agent(ctx: Context):

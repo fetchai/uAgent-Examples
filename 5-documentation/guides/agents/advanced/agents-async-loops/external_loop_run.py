@@ -8,6 +8,8 @@ agent = Agent(
     name="looper",
     seed="<YOUR_SEED>",
     loop=loop,
+    port = 8000,
+    endpoint = ["http://127.0.0.1:8000/submit"],
 )
 
 bureau = Bureau(

@@ -15,7 +15,7 @@ class Response(Model):
 class EmptyMessage(Model):
     pass
 
-agent = Agent(name="Rest API")
+agent = Agent(name="Rest API", seed="your_seed_phrase", port=8000, endpoint=["http://localhost:8000/submit"])
 
 @agent.on_rest_get("/rest/get", Response)
 async def handle_get(ctx: Context) -> Dict[str, Any]:
