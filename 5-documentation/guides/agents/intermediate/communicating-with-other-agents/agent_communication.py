@@ -3,8 +3,8 @@ from uagents import Agent, Bureau, Context, Model
 class Message(Model):
     message: str
 
-sigmar = Agent(name="sigmar", seed="sigmar recovery phrase")
-slaanesh = Agent(name="slaanesh", seed="slaanesh recovery phrase")
+sigmar = Agent(name="sigmar", seed="sigmar recovery phrase", port=8000, endpoint=["http://localhost:8000/submit"])
+slaanesh = Agent(name="slaanesh", seed="slaanesh recovery phrase", port=8001, endpoint=["http://localhost:8001/submit"])
 
 @sigmar.on_interval(period=3.0)
 async def send_message(ctx: Context):

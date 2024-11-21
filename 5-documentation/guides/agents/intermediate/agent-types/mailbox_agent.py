@@ -12,7 +12,7 @@ SEED_PHRASE = "put_your_seed_phrase_here"
 agent = Agent(
     name="alice",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai"
 )
 
 # Copy the address shown below
