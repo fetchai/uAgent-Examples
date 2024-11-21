@@ -1,0 +1,76 @@
+name: Deploy Agents
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - '1-uagents/finance/**'
+            - '1-uagents/geo/**'
+            - '1-uagents/knowledge-base/**'
+            - '1-uagents/search/**'
+            - '1-uagents/travel/**'
+            - '1-uagents/utility/**'
+            - 'scripts/deploy-all-agents.sh'
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            
+            - name: Download latest AVCTL release binary
+              run: |
+                  LATEST_RELEASE_URL=$(curl -s https://api.github.com/repos/fetchai/avctl/releases/latest \
+                  | grep browser_download_url \
+                  | grep avctl_Linux_x86_64.tar.gz \
+                  | cut -d '"' -f 4)
+          
+                  curl -L -o avctl_Linux_x86_64.tar.gz $LATEST_RELEASE_URL
+            
+            - name: Extract binary and install
+              run: |
+                  tar -xvf avctl_Linux_x86_64.tar.gz
+                  chmod +x avctl
+                  mv avctl /usr/local/bin/avctl
+
+            - name: Authenticate with Agentverse
+              run: avctl auth token ${{ secrets.AGENTVERSE_API_KEY }}
+
+            - name: Deploy all agents
+              run: ./scripts/deploy-all-agents.sh
+              env:
+                  ALPHAVANTAGE_API_KEY: ${{ secrets.ALPHAVANTAGE_API_KEY }}
+                  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+                  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+                  GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+                  OCM_API_KEY: ${{ secrets.OCM_API_KEY }}
+                  OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+                  OPENCAGE_API_KEY: ${{ secrets.OPENCAGE_API_KEY }}
+                  WEATHERAPI_KEY: ${{ secrets.WEATHERAPI_KEY }}
+                  HUGGINGFACE_API_KEY: ${{ secrets.HUGGINGFACE_API_KEY }}
+                  GEOAPIFY_API_KEY: ${{ secrets.GEOAPIFY_API_KEY }}
+                  TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
+                  RAPIDAPI_API_KEY: ${{ secrets.RAPIDAPI_API_KEY }}
+
+            - name: Commit and push changes (avctl folders for new agents)
+              if: always()
+              run: |
+                  COMMIT_MESSAGE="chore: add deployment configuration files for new agents"
+    
+                  git config --local user.email "fetchbot@fetch.ai"
+                  git config --local user.name "fetch-bot"
+    
+                  # Add all new avctl files
+                  git add agents/**.avctl**
+                  
+                  # Commit and push any changes
+                  if git diff --cached --quiet; then
+                    echo "No changes to commit"
+                    exit 0
+                  fi
+    
+                  git commit -m "$COMMIT_MESSAGE"
+                  git push origin main
