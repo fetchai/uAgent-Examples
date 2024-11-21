@@ -3,9 +3,9 @@ from uagents import Agent, Bureau, Context, Model, Protocol
 # create agents
 # alice and bob will support the protocol
 # charles will try to reach all agents supporting the protocol
-alice = Agent(name="alice", seed="alice recovery phrase")
-bob = Agent(name="bob", seed="bob recovery phrase")
-charles = Agent(name="charles", seed="charles recovery phrase")
+alice = Agent(name="alice", seed="alice recovery phrase", port=8000, endpoint=["http://127.0.0.1:8000/submit"])
+bob = Agent(name="bob", seed="bob recovery phrase", port=8001, endpoint=["http://127.0.0.1:8001/submit"])
+charles = Agent(name="charles", seed="charles recovery phrase", port=8002, endpoint=["http://127.0.0.1:8002/submit"])
 
 
 class BroadcastExampleRequest(Model):
