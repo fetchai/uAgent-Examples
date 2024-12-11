@@ -3,7 +3,6 @@ from typing import List
 
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
-
 from uagents import Context, Model, Protocol
 
 from .models import Availability, Provider, User
@@ -76,11 +75,11 @@ async def handle_query_request(ctx: Context, sender: str, msg: ServiceRequest):
     ctx.logger.info(f"Received service request from user `{user.name}`")
 
     if (
-        set(msg.services) <= set(services)
-        and in_service_region(msg.location, availability, provider)
-        and availability.time_start <= msg.time_start
-        and availability.time_end >= msg.time_start + msg.duration
-        and availability.min_hourly_price * msg_duration_hours < msg.max_price
+            set(msg.services) <= set(services)
+            and in_service_region(msg.location, availability, provider)
+            and availability.time_start <= msg.time_start
+            and availability.time_end >= msg.time_start + msg.duration
+            and availability.min_hourly_price * msg_duration_hours < msg.max_price
     ):
         accept = True
         price = markup * availability.min_hourly_price * msg_duration_hours
@@ -104,10 +103,10 @@ async def handle_book_request(ctx: Context, sender: str, msg: ServiceBooking):
     ctx.logger.info(f"Received booking request from user `{user.name}`")
 
     success = (
-        set(msg.services) <= set(services)
-        and availability.time_start <= msg.time_start
-        and availability.time_end >= msg.time_start + msg.duration
-        and msg.price <= availability.min_hourly_price * msg_duration_hours
+            set(msg.services) <= set(services)
+            and availability.time_start <= msg.time_start
+            and availability.time_end >= msg.time_start + msg.duration
+            and msg.price <= availability.min_hourly_price * msg_duration_hours
     )
 
     if success:
