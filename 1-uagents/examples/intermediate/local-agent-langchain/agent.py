@@ -10,18 +10,17 @@ class WikiReq(Model):
     search_keyword: str = Field(description="This describes the keyword you want to search on wiki")
  
 SEED_PHRASE = "<Secret Phrase for your agent>"
- 
-# Copy the address shown below
-print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
- 
-AGENT_MAILBOX_KEY = "Your_mailbox_address"
- 
+
 # Now your agent is ready to join the agentverse!
 WikiAgent = Agent(
     name="Wiki Agent",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True,
 )
+
+# Copy the address shown below
+print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
+
 fund_agent_if_low(WikiAgent.wallet.address()) #funding agent.
 wiki_protocol = Protocol("Wiki Protocol")
  
