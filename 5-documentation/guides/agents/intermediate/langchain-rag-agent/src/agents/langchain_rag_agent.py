@@ -15,25 +15,22 @@ from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import CohereRerank
 from ai_engine import UAgentResponse, UAgentResponseType
 import nltk
+from uagents.setup import fund_agent_if_low
 
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
 
-
-LANGCHAIN_RAG_SEED = os.getenv("LANGCHAIN_RAG_SEED", "")
-assert (
-    LANGCHAIN_RAG_SEED
-), "LANGCHAIN_RAG_SEED environment variable is missing from .env"
+LANGCHAIN_RAG_SEED = "YOUR_LANGCHAIN_RAG_SEED"
 
 agent = Agent(
     name="langchain_rag_agent",
     seed=LANGCHAIN_RAG_SEED,
-    port=8001,
-    endpoint=["http://127.0.0.1:8001/submit"],
+    mailbox=True,
 )
 
-docs_bot_protocol = Protocol("DocsBot")
+fund_agent_if_low(agent.wallet.address())
 
+docs_bot_protocol = Protocol("DocsBot")
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
@@ -47,7 +44,7 @@ Answer the question based on the above context: {question}
 
 
 def create_retriever(
-    ctx: Context, url: str, deep_read: bool
+        ctx: Context, url: str, deep_read: bool
 ) -> ContextualCompressionRetriever:
     def scrape(site: str):
         if not validators.url(site):
@@ -67,10 +64,10 @@ def create_retriever(
                 continue
             current_site = f"{base_domain}{href}" if href.startswith("/") else href
             if (
-                ".php" in current_site
-                or "#" in current_site
-                or not current_site.startswith(url)
-                or current_site in urls
+                    ".php" in current_site
+                    or "#" in current_site
+                    or not current_site.startswith(url)
+                    or current_site in urls
             ):
                 continue
             urls.append(current_site)
@@ -122,7 +119,7 @@ async def answer_question(ctx: Context, sender: str, msg: RagRequest):
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=msg.question)
 
-    model = ChatOpenAI(model="gpt-3.5-turbo-1106")
+    model = ChatOpenAI(model="gpt-4o-mini")
     response = model.predict(prompt)
     ctx.logger.info(f"Response: {response}")
     await ctx.send(
@@ -131,7 +128,6 @@ async def answer_question(ctx: Context, sender: str, msg: RagRequest):
 
 
 agent.include(docs_bot_protocol, publish_manifest=True)
-
 
 if __name__ == "__main__":
     agent.run()
