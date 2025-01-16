@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "fetch-stripe-payment-agent"
+version = "0.1.0"
+description = "A system for payment processing and invoice generation using Stripe, uAgents, and CrewAI."
+authors = ["Chirag Maliwal <devchiragmaliwal@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+stripe-agent-toolkit = "^0.2.0"
+stripe = "^11.0.0"
+crewai = "^0.86.0"
+uagents = "^0.18.1"
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
