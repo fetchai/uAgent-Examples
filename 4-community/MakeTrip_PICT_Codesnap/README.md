@@ -109,7 +109,7 @@ OR
 
 Now you have the agents up and running to perform travel planning integrations using the provided APIs. Happy integrating!
 
-## Contibutors:
+## Contributors:
 
 ```
     Piyush Dahake (https://github.com/piyush960)
