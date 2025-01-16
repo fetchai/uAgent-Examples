@@ -8,13 +8,12 @@ from utils import perform_speaker_diarization
 
 load_dotenv()
 
-AGENT_MAILBOX_KEY = os.getenv("AGENT_MAILBOX_KEY")
 HUGGING_FACE_TOKEN = os.getenv("HUGGING_FACE_TOKEN")
 
 agent = Agent(
     name="speaker diarization",
     seed="speaker diarization phrase",
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 protocol = Protocol("speaker diarization versions", version="0.1.1")

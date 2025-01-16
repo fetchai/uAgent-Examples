@@ -29,10 +29,7 @@ export ANTHROPIC_API_KEY=YOUR_KEY
 poetry run agent
 ```
 
-2. Copy out your agent address, and go to agentverse.ai, log in and create a Mailroom mailbox for this agent, copy out the key and set it as the following environment variable:
-```bash
-export AGENT_MAILBOX_KEY=YOUR_KEY
-```
+2. Copy out your agent address, and go to agentverse.ai using the local agent inspector.
 
 3. Run your agent using `poetry run agent`
 

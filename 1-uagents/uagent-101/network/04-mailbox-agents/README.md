@@ -21,7 +21,7 @@ poetry shell
 - **Process**:
   1. **Obtain Agent Address**: First, determine your agent's address by running the agent script with your seed phrase (uniqueness is crucial for new mailbox creation). The address will be printed to the console.
   2. **Create Mailbox**: Visit [agentverse.ai](https://agentverse.ai) and login, click on the Mailroom section, and create a new mailbox using your agent's address. During this process, you'll receive a unique mailbox key, copy it.
-  3. **Configure Script**: Insert the obtained mailbox key into your agent's script in the `mailbox` field, formatted as `AGENT_MAILBOX_KEY`.
+  3. **Configure Script**: Insert the obtained mailbox key into your agent's script in the `mailbox` field.
 
 ### Mailbox Communication
 
