@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "vectara-rag-agent"
+version = "0.1.0"
+description = ""
+authors = ["gautamgambhir97 <gautam.gambhir@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<3.13"
+uagents = "^0.18.1"
+python-dotenv = "^1.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
