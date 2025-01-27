@@ -1,8 +1,8 @@
 import os
 
 import requests
-from quota import RateLimiter
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Context, Model
+from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
 AGENT_SEED = os.getenv("AGENT_SEED")
@@ -26,12 +26,12 @@ agent = Agent(
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-
-@agent.on_event("startup")
-async def introduce(ctx: Context):
-    ctx.logger.info(ctx.agent.address)
-
-proto = Protocol(name="Slack-Protocol", version="0.1.0")
+proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="Slack-Protocol",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=3),
+)
 
 def open_dm_channel(user_id):
     try:
@@ -77,10 +77,8 @@ def send_message(channel, message):
     except Exception as e:
         return "Error encountered: " + str(e)
 
-rate_limiter = RateLimiter(agent.storage)
 
 @proto.on_message(SlackMessageRequest, replies={SlackMessageResponse, ErrorMessage})
-@rate_limiter.wrap
 async def handle_request(ctx: Context, sender: str, msg: SlackMessageRequest):
     try:
         dm_channel_id = open_dm_channel(msg.id)
