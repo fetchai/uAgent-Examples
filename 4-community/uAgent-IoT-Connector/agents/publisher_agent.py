@@ -63,15 +63,13 @@ class Message(Model):
 SEED_PHRASE = "something randum"
 
 # Copy the address shown below
-# print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
-
-AGENT_MAILBOX_KEY = ""
+print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
 
 # Now your agent is ready to join the agentverse!
 agent = Agent(
     name="alice",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 

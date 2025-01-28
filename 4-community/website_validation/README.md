@@ -40,7 +40,6 @@ To get started with **Website Validation**, follow these steps:
 2. **Set up .env file**:
    To run the demo, you need to add these API keys in .env file:
    ```bash
-   AGENT_MAILBOX_KEY = "YOUR_MAILBOX_KEY"
    OPEN_AI_BASE_URL="YOUR_OPEN_AI_BASE_URL"
    OPEN_AI_API_KEY="YOUR_OPEN_AI_BASE_KEY"
    OPEN_AI_MODEL_NAME="YOUR_OPEN_AI_MODEL_NAME"

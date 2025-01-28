@@ -5,8 +5,6 @@ from uagents import Agent, Context, Protocol, Model
 from langchain_community.utilities.google_jobs import GoogleJobsAPIWrapper
 
 os.environ["SERPAPI_API_KEY"] = "xxxx"  # use serp API
-AGENT_MAILBOX_KEY = "xxxxx"  # use actual mailbox key
-
 
 # Extend your protocol with Wikipedia data fetching
 class JobRequest(Model):
@@ -18,7 +16,7 @@ agent = Agent(
     name="jobs2",
     port=8000,
     seed="sangam_secretseed_jobs",
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True,
     endpoint=["http://127.0.0.1:8000/submit"],
 )
 print(f"Your agent's address is: {agent.address}")

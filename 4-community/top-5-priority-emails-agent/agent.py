@@ -27,7 +27,6 @@ class EmailAssistant(Model):
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SEED_PHRASE = os.getenv("SEED_PHRASE")
-AGENT_MAILBOX_KEY = os.getenv("AGENT_MAILBOX_KEY")
 
 
 chat = ChatOpenAI(model="gpt-3.5-turbo-0125", api_key=OPENAI_API_KEY)
@@ -35,7 +34,7 @@ chat = ChatOpenAI(model="gpt-3.5-turbo-0125", api_key=OPENAI_API_KEY)
 email_assistant_agent = Agent(
     name="Email Assistant Agent",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 email_assistant_protocol = Protocol("Email Assistant Protocol")

@@ -42,14 +42,12 @@ To set up the Elderly Assistant agent, follow these steps:
 
    - `OPENAI_API_KEY`: Your OpenAI API key for accessing GPT models.
    - `SEED_PHRASE`: A secure [seed phrase](https://fetch.ai/docs/guides/agent-courses/introductory-course#agent-interactions-and-interval-tasks) for your agent's identity.
-   - `AGENT_MAILBOX_KEY`: Your agent's mailbox key, obtained after registering your agent in [Agentverse](https://agentverse.ai).
 
    Example `.env`:
 
    ```plaintext
    OPENAI_API_KEY=<your_openai_api_key>
    SEED_PHRASE=<your_secure_seed_phrase>
-   AGENT_MAILBOX_KEY=<your_agent_mailbox_key>
    ```
 
 ## Running the Agent

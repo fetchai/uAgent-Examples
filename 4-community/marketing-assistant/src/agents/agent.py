@@ -13,7 +13,6 @@ SEED_PHRASE = os.environ.get("SEED_PHRASE")
 APY_ACCESS_TOKEN = os.environ.get("APY_ACCESS_TOKEN")
 IMAGE_CREATION_API_TOKEN = os.environ.get("IMAGE_CREATION_API_TOKEN")
 GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-AGENT_MAILBOX_KEY = os.environ.get("AGENT_MAILBOX_KEY")
 FIREBASE_STORAGE_BUCKET = os.environ.get("FIREBASE_STORAGE_BUCKET")
 FIREBASE_API_KEY = os.environ.get("FIREBASE_API_KEY")
 
@@ -32,7 +31,7 @@ print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
 localagent = Agent(
     name="Local Agent",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 

@@ -35,12 +35,10 @@ AGENT_SEED = os.environ["AGENT_SEED"]
 if not AGENT_SEED:
     raise ValueError("AGENT_SEED not set in .env file")
 
-MAILBOX_KEY = os.environ["MAILBOX_KEY"]
-
 agent = Agent(
     name="project",
     seed=AGENT_SEED,
-    mailbox=f"{MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 

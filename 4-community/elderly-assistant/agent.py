@@ -26,13 +26,12 @@ SEED_PHRASE = os.getenv("SEED_PHRASE")
 
 print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
 
-AGENT_MAILBOX_KEY = os.getenv("AGENT_MAILBOX_KEY")
 API_KEY = os.getenv("OPENAI_API_KEY")
 
 safety_agent = Agent(
     name="elderly-assistant",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 safety_protocol = Protocol("safety-analysis")

@@ -26,7 +26,6 @@ Notion Feedback Checker RAG integration example offers a guide to setting up and
     export NOTION_USER_SEED="{random string that determines your user agent's address}"
     export NOTION_TOKEN="{GET THE TOKEN - see above}"
     export NOTION_DB_ID="{ID of you Feedback DB}"
-    export AGENT_MAILBOX_KEY="{Mailbox key that you have to generate at https://agentverse.ai/mailroom using your Notion RAG agent's address}"
     ```
 
 3. In the `notion-feedback-checker` directory install all dependencies

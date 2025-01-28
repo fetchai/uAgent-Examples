@@ -16,15 +16,13 @@ NOTION_TOKEN = os.getenv("NOTION_TOKEN", "")
 assert NOTION_TOKEN, "NOTION_TOKEN environment variable is missing from .env"
 NOTION_DB_ID = os.getenv("NOTION_DB_ID", "")
 assert NOTION_DB_ID, "NOTION_DB_ID environment variable is missing from .env"
-AGENT_MAILBOX_KEY = os.getenv("AGENT_MAILBOX_KEY", "")
-assert AGENT_MAILBOX_KEY, "AGENT_MAILBOX_KEY environment variable is missing from .env"
 
 agent = Agent(
     name="notion_rag_agent",
     seed=NOTION_RAG_SEED,
     port=8001,
     endpoint=["http://127.0.0.1:8001/submit"],
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 docs_bot_protocol = Protocol("DocsBot")

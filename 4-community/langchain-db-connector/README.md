@@ -172,7 +172,6 @@ Please create a `.env` file with the following contents and populate accordingly
 ```env
 OPENAI_API_KEY=""
 AGENT_SEED=""
-MAILBOX_KEY=""
 ```
 
 Rename the `databases.json_` file to `databases.json` (the repo ignores .json files)

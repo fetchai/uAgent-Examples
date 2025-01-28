@@ -20,7 +20,6 @@ To get started with **Website Validation**, follow these steps:
 2. **Set up .env file**:
    To run the demo, you need to add these API keys in .env file:
    ```bash
-   AGENT_MAILBOX_KEY = "YOUR_MAILBOX_KEY"
    HUGGING_FACE_TOKEN="YOUR_HUGGING_FACE_TOKEN"
 3. **Open a shell**:
    ```bash

@@ -11,12 +11,10 @@ from utils import find_broken_links, format_errors
 
 load_dotenv()
 
-AGENT_MAILBOX_KEY = os.getenv("AGENT_MAILBOX_KEY")
-
 agent = Agent(
     name="website validation",
     seed="website validation phrase",
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 protocol = Protocol("website validation versions", version="0.1.1")
