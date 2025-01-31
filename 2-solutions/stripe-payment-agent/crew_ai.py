@@ -1,14 +1,16 @@
 import os
-from crewai import Agent, Task, Crew
+
+from crewai import Agent, Crew, Task
 from dotenv import load_dotenv
 from stripe_agent_toolkit.crewai.toolkit import StripeAgentToolkit
 
 load_dotenv()
 
+
 class PaymentProcess:
     def __init__(self):
         self.stripe_secret_key = os.getenv("STRIPE_SECRET_KEY")
-        
+
         self.stripe_toolkit = StripeAgentToolkit(
             secret_key=self.stripe_secret_key,
             configuration={
@@ -20,7 +22,7 @@ class PaymentProcess:
                 }
             },
         )
-        
+
         self.payment_agent = Agent(
             role="Payment Processor",
             goal="Handles secure Stripe payment processing.",
@@ -35,7 +37,9 @@ class PaymentProcess:
             planning=True,
         )
 
-    def create_payment_link(self, amount, currency, product_name, quantity, customer_email):
+    def create_payment_link(
+        self, amount, currency, product_name, quantity, customer_email
+    ):
         description = (
             f"Create a payment link for a new product '{product_name}' "
             f"with a price of {amount} {currency} and quantity {quantity} "
