@@ -110,7 +110,7 @@ async def query_handler(ctx: Context, sender: str, msg: NewsRequest):
         symbol = await fetch_symbol(msg.company_name)
         ctx.logger.info(f" Symbol for company provided is {symbol}")
         if (
-            symbol != None
+            symbol is not None
         ):  # if company symbol fetch successfully getting news using ticker symbol else using the company name itself.
             news_list = await fetch_news(symbol)
         else:
@@ -134,7 +134,7 @@ async def query_handler2(ctx: Context, sender: str, msg: UrlRequest):
         )
         symbol = await fetch_symbol(msg.company_name)
         ctx.logger.info(f" Symbol for company provided is {symbol}")
-        if symbol != None:
+        if symbol is not None:
             url_list = await fetch_url(symbol)
         else:
             url_list = await fetch_url(msg.company_name)
