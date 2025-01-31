@@ -11,6 +11,7 @@ on:
             - '1-uagents/search/**'
             - '1-uagents/travel/**'
             - '1-uagents/utility/**'
+            - '1-uagents/communication/**'
             - 'scripts/deploy-all-agents.sh'
 
 jobs:
