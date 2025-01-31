@@ -14,6 +14,7 @@ This guide provides the steps for creating a RAG agent using the Vectara API wit
 ## Setup Steps
 
 ### 1. **Create an Account on Vectara**
+
 - Go to [Vectara Console](https://console.vectara.com) and create a new account.
 - Create a new corpus:
   - Click the **Create Corpus** button.
@@ -22,12 +23,14 @@ This guide provides the steps for creating a RAG agent using the Vectara API wit
   - Get your **API Key** from the **Authorization** section in the menu.
 
 ### 2. **Add Documents to the Corpus**
+
 - Go to your corpus and click the **Data** tab.
 - Upload files (text, HTML, PDF, Word, etc.) by clicking on the **Upload Data** button.
 
 ---
 
 ### 3. **Make API Calls to the Corpus**
+
 Once your corpus is set up and contains the necessary data, you can interact with the Vectara API by making calls to your corpus using the **API Key** and **Corpus Key**.
 
 ---
@@ -37,9 +40,11 @@ Once your corpus is set up and contains the necessary data, you can interact wit
 To manage your project dependencies, follow these steps:
 
 1. **Install Poetry**:
+
    - Follow the installation instructions from [Poetry's Official Website](https://python-poetry.org/docs/#installation).
 
 2. **Create a Virtual Environment**:
+
    - In your project directory, run the following command to create a virtual environment:
      ```bash
      poetry init
@@ -47,6 +52,7 @@ To manage your project dependencies, follow these steps:
    - Follow the prompts to configure your project.
 
 3. **Activate the Virtual Environment**:
+
    - To activate the virtual environment:
      ```bash
      poetry shell
@@ -58,7 +64,6 @@ To manage your project dependencies, follow these steps:
      poetry add uagents python-dotenv
      ```
    - You can add more dependencies as needed.
-
 
 ## Dependencies
 

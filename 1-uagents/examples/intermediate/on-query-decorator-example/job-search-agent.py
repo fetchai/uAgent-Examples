@@ -1,23 +1,21 @@
 # import required libraries
 import json
- 
+
 import aiohttp
 from uagents import Agent, Context, Model
-from uagents.setup import fund_agent_if_low
- 
- 
+
+
 # Define Request and Response Data Models
 class Request(Model):
     query: str
- 
- 
+
+
 class Response(Model):
     response: str
- 
- 
+
+
 # Define asynchronous function to handle job search queries using a serpapi url
 async def get_job_summary(query: str, location: str, api_key: str):
- 
     url = "https://serpapi.com/search.json"
     params = {
         "q": query + " careers",
@@ -25,7 +23,7 @@ async def get_job_summary(query: str, location: str, api_key: str):
         "engine": "google_jobs",
         "api_key": api_key,
     }
- 
+
     async with aiohttp.ClientSession() as session:
         async with session.get(url, params=params) as response:
             if response.status == 200:
@@ -56,8 +54,8 @@ async def get_job_summary(query: str, location: str, api_key: str):
                     return "No job results found."
             else:
                 return f"Failed to fetch data: {response.status}"
- 
- 
+
+
 # Define Search Agent
 SearchAgent = Agent(
     name="SearchAgent",
@@ -65,17 +63,14 @@ SearchAgent = Agent(
     seed="<YOUR_AGENT_SECRET_PHRASE>",
     endpoint=["http://127.0.0.1:8000/submit"],
 )  # Update your agent's secret phrase
- 
-# Registering agent on Almanac and funding it
-fund_agent_if_low(SearchAgent.wallet.address())
- 
- 
+
+
 # On agent startup printing address
 @SearchAgent.on_event("startup")
 async def agent_details(ctx: Context):
     ctx.logger.info(f"Search Agent Address is {SearchAgent.address}")
- 
- 
+
+
 # On_query decorator to handle jobs request
 @SearchAgent.on_query(model=Request, replies={Response})
 async def query_handler(ctx: Context, sender: str, msg: Request):
@@ -83,7 +78,9 @@ async def query_handler(ctx: Context, sender: str, msg: Request):
     try:
         ctx.logger.info(f"Fetching job details for query: {msg.query}")
         response = await get_job_summary(
-            msg.query, "United Kingdom", "<YOUR_SERPAPI_API_KEY_HERE>" # Update your serpapi API key
+            msg.query,
+            "United Kingdom",
+            "<YOUR_SERPAPI_API_KEY_HERE>",  # Update your serpapi API key
         )  # Replace your serpAPI key.
         ctx.logger.info(f"Response: {response}")
         await ctx.send(sender, Response(response=response))
@@ -91,7 +88,7 @@ async def query_handler(ctx: Context, sender: str, msg: Request):
         error_message = f"Error fetching job details: {str(e)}"
         ctx.logger.error(error_message)
         await ctx.send(sender, Response(response=str(error_message)))
- 
- 
+
+
 if __name__ == "__main__":
     SearchAgent.run()

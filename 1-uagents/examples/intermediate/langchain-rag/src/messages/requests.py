@@ -1,7 +1,8 @@
 from typing import Optional
-from uagents import Model, Field
- 
- 
+
+from uagents import Field, Model
+
+
 class RagRequest(Model):
     question: str = Field(
         description="The question that the user wants to have an answer for."
@@ -11,4 +12,3 @@ class RagRequest(Model):
         description="Specifies weather all nested pages referenced from the starting URL should be read or not. The value should be yes or no.",
         default="no",
     )
- 

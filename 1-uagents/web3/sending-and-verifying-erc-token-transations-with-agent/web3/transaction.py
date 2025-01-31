@@ -1,9 +1,10 @@
+import json
+import os
+from typing import Dict, Optional
+
+from dotenv import load_dotenv
 from uagents import Agent, Bureau, Context, Model
 from web3 import Web3
-from dotenv import load_dotenv
-from typing import Optional, Dict
-import os
-import json
 
 load_dotenv()
 provider_url = os.getenv("WEB3_PROVIDER_URL")

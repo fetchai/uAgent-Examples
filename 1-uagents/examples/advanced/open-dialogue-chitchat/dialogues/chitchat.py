@@ -1,6 +1,7 @@
 # Import required libraries
- 
+
 from typing import Type
+
 from uagents import Model
 from uagents.experimental.dialogues import Dialogue, Edge, Node
 
@@ -10,7 +11,7 @@ default_state = Node(
     description=(
         "This is the default state of the dialogue. Every session starts in "
         "this state and is automatically updated once the dialogue starts."
-    )
+    ),
 )
 init_state = Node(
     name="Initiated",
@@ -63,12 +64,13 @@ end_session = Edge(
     child=end_state,
 )
 
+
 class ChitChatDialogue(Dialogue):
     """
     This is the specific definition of the rules for the chit-chat dialogue
     The rules will be predefined and the actual messages will be passed into it
     """
- 
+
     def __init__(
         self,
         version: str | None = None,
@@ -91,7 +93,7 @@ class ChitChatDialogue(Dialogue):
                 end_session,
             ],
         )
- 
+
     def on_initiate_session(self, model: Type[Model]):
         """
         This handler is triggered when the initial message of the
@@ -100,7 +102,7 @@ class ChitChatDialogue(Dialogue):
         global agent state should go here.
         """
         return super()._on_state_transition(init_session.name, model)
- 
+
     def on_reject_session(self, model: Type[Model]):
         """
         This handler is triggered when a reject message is returned on
@@ -108,7 +110,7 @@ class ChitChatDialogue(Dialogue):
         Implement this if you need to clean up session data.
         """
         return super()._on_state_transition(reject_session.name, model)
- 
+
     def on_start_dialogue(self, model: Type[Model]):
         """
         This handler is triggered when an accept message is returned on
@@ -117,7 +119,7 @@ class ChitChatDialogue(Dialogue):
         prepare the actual message exchange.
         """
         return super()._on_state_transition(start_dialogue.name, model)
- 
+
     def on_continue_dialogue(self, model: Type[Model]):
         """
         This handler is triggered for every incoming "chitchat" message
@@ -126,7 +128,7 @@ class ChitChatDialogue(Dialogue):
         persisted explicitly to access it at a later point in the dialogue.
         """
         return super()._on_state_transition(cont_dialogue.name, model)
- 
+
     def on_end_session(self, model: Type[Model]):
         """
         This handler is triggered once the other party has ended the dialogue.

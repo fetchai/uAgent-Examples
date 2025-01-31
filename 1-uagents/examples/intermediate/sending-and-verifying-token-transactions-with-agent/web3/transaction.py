@@ -1,10 +1,11 @@
+import json
+import os
+from typing import Dict, Optional
+
+from dotenv import load_dotenv
 from uagents import Agent, Bureau, Context, Model
 from web3 import Web3
-from dotenv import load_dotenv
-from typing import Optional, Dict
-import os
-import json
- 
+
 load_dotenv()
 provider_url = os.getenv("WEB3_PROVIDER_URL")
 sender_address = os.getenv("SENDER_ADDRESS")
@@ -12,49 +13,49 @@ receiver_address = os.getenv("RECEIVER_ADDRESS")
 sender_private_key = os.getenv("SENDER_PRIVATE_KEY")
 usdc_contract_address = os.getenv("USDC_CONTRACT_ADDRESS")
 amount = os.getenv("AMOUNT")
- 
- 
+
+
 class TransactionRequest(Model):
     message: str
     action: str
     transaction_hash: Optional[str] = None
- 
- 
+
+
 class TransactionResponse(Model):
     message: str
     balance: Optional[int] = 0
     transaction_receipt: Optional[Dict] = None
- 
- 
+
+
 class VerificationRequest(Model):
     transaction_hash: str
- 
- 
+
+
 class VerificationResponse(Model):
     status: str
     receipt: Optional[Dict] = None
- 
- 
+
+
 with open("abi.json") as abi_file:
     proxy_abi = json.load(abi_file)
- 
+
 w3 = Web3(Web3.HTTPProvider(provider_url))
 proxy_contract = w3.eth.contract(address=usdc_contract_address, abi=proxy_abi)
- 
- 
+
+
 transaction_initiator = Agent(
     name="transaction_initiator", seed="transaction_initiator recovery phrase"
 )
- 
+
 transaction_processor = Agent(
     name="transaction_processor", seed="transaction_processor recovery phrase"
 )
- 
+
 verification_agent = Agent(
     name="verification_agent", seed="verification_agent recovery phrase"
 )
- 
- 
+
+
 @transaction_initiator.on_event("startup")
 async def initiate_transaction(ctx: Context):
     """
@@ -66,8 +67,8 @@ async def initiate_transaction(ctx: Context):
         transaction_processor.address,
         TransactionRequest(message="Requesting transaction", action="send_usdc"),
     )
- 
- 
+
+
 @transaction_initiator.on_message(
     model=TransactionResponse, replies=VerificationRequest
 )
@@ -89,8 +90,8 @@ async def transaction_initiator_response_handler(
             verification_agent.address,
             VerificationRequest(transaction_hash=transaction_hash),
         )
- 
- 
+
+
 @transaction_processor.on_message(model=TransactionRequest, replies=TransactionResponse)
 async def transaction_processor_request_handler(
     ctx: Context, sender: str, msg: TransactionRequest
@@ -102,7 +103,7 @@ async def transaction_processor_request_handler(
     ctx.logger.info(
         f"*** Transaction Processor received request from {sender}: {msg.message} with action {msg.action} ***"
     )
- 
+
     if msg.action == "send_usdc":
         ctx.logger.info(
             f"*** Preparing to send USDC from {sender_address} to {receiver_address} ***"
@@ -120,12 +121,12 @@ async def transaction_processor_request_handler(
                 "gasPrice": gas_price,
             }
         )
- 
+
         signed_txn = sender_account.sign_transaction(transaction)
         raw_transaction = signed_txn.raw_transaction
         tx_hash = w3.eth.send_raw_transaction(raw_transaction)
         receipt = w3.eth.wait_for_transaction_receipt(tx_hash)
- 
+
         receipt_dict = {
             "transactionHash": receipt.transactionHash.hex(),
             "transactionIndex": receipt.transactionIndex,
@@ -135,19 +136,19 @@ async def transaction_processor_request_handler(
             "gasUsed": receipt.gasUsed,
             "status": receipt.status,
         }
- 
+
         ctx.logger.info(
             f"*** USDC Transaction complete. Receipt details: {receipt_dict} ***"
         )
- 
+
         await ctx.send(
             sender,
             TransactionResponse(
                 message="USDC Transaction complete", transaction_receipt=receipt_dict
             ),
         )
- 
- 
+
+
 @verification_agent.on_message(model=VerificationRequest, replies=VerificationResponse)
 async def verification_request_handler(
     ctx: Context, sender: str, msg: VerificationRequest
@@ -159,7 +160,7 @@ async def verification_request_handler(
     ctx.logger.info(
         f"*** Verification Agent received request: {msg.transaction_hash} ***"
     )
- 
+
     try:
         receipt = w3.eth.get_transaction_receipt(msg.transaction_hash)
         if receipt:
@@ -179,13 +180,12 @@ async def verification_request_handler(
             ctx.logger.info(f"*** Transaction not found: {msg.transaction_hash} ***")
     except Exception as e:
         ctx.logger.error(f"*** Error during verification: {e} ***")
- 
- 
+
+
 bureau = Bureau()
 bureau.add(transaction_initiator)
 bureau.add(transaction_processor)
 bureau.add(verification_agent)
- 
+
 if __name__ == "__main__":
     bureau.run()
- 
