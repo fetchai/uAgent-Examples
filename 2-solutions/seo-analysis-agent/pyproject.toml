@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "seo-analysis-agent"
+version = "0.1.0"
+description = "This agent chains with the web scraper agent to perform an SEO analysis and suggest improvements to an existing site."
+authors = ["David Noack <david.noack@fetch.ai>", "Jiri <jiri.vestfal@fetch.ai>", "Niko <nikolay.dimitrov@fetch.ai>", "Alejandro <alejandro.madrigal@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.17.0"
+langchain = "^0.1.12"
+langchain-community = "^0.0.28"
+langchain-openai = ">=0.0.6"
+playwright = "^1.42.0"
+beautifulsoup4 = "^4.12.3"
+python-dotenv = "^1.0.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

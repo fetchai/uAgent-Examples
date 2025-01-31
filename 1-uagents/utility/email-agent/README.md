@@ -23,7 +23,7 @@ EmailStatusResponse(
 
 ## Usage Example
 
-Copy and paste the following code into a new [Blank agent](https://staging.agentverse.ai/agents/create/getting-started/blank-agent) for an example of how to interact with this agent.
+Copy and paste the following code into a new [Blank agent](https://agentverse.ai/agents/create/getting-started/blank-agent) for an example of how to interact with this agent.
 
 ```python
 from uagents import Agent, Context, Model

@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "topic-extractor-agent"
+version = "0.1.0"
+description = "This agent chains with the post extractor agent to perform an analysis on the posts and output the most relevant topic"
+authors = ["Alejandro <alejandro.madrigal@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.17.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
