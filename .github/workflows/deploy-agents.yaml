@@ -58,22 +58,23 @@ jobs:
                   RAPIDAPI_API_KEY: ${{ secrets.RAPIDAPI_API_KEY }}
                   SAPLING_API_KEY: ${{ secrets.SAPLING_API_KEY }}
 
-            - name: Commit and push changes (avctl folders for new agents)
-              if: always()
+            - name: Check for newly deployed agents
+              id: check-new-agents
               run: |
-                  COMMIT_MESSAGE="chore: add deployment configuration files for new agents"
-    
-                  git config --local user.email "fetchbot@fetch.ai"
-                  git config --local user.name "fetch-bot"
-    
-                  # Add all new avctl files
-                  git add 1-uagents/**.avctl**
-                  
-                  # Commit and push any changes
-                  if git diff --cached --quiet; then
-                    echo "No changes to commit"
-                    exit 0
+                  if git diff --quiet 1-uagents/**.avctl**; then
+                    echo "new=true" >> "$GITHUB_OUTPUT"
+                  else
+                    echo "new=false" >> "$GITHUB_OUTPUT"
                   fi
-    
-                  git commit -m "$COMMIT_MESSAGE"
-                  git push origin main
+
+            - name: Create Pull Request
+              uses: peter-evans/create-pull-request@v7
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  commit-message: "deploy: add .avctl files for new agents"
+                  title: "deploy: add deployment configuration files for new agents"
+                  body: "This PR adds AVCTL deployment configuration files for new agents."
+                  base: "main"
+                  branch: "chore/deploy-production-agents-${{ github.run_number }}"
+                  add-paths: "1-uagents/**.avctl**"
+              if: steps.check-new-agents.outputs.new == 'true'
