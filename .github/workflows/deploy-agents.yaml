@@ -66,7 +66,7 @@ jobs:
                   git config --local user.name "fetch-bot"
     
                   # Add all new avctl files
-                  git add agents/**.avctl**
+                  git add 1-uagents/**.avctl**
                   
                   # Commit and push any changes
                   if git diff --cached --quiet; then
