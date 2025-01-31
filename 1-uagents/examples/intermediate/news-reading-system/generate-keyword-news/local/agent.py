@@ -1,8 +1,7 @@
 # Import libraries
 import requests
-from uagents import Agent, Context, Model, Field, Protocol
+from uagents import Agent, Context, Model, Protocol
 from uagents.setup import fund_agent_if_low
-import json
 from ai_engine import UAgentResponse, UAgentResponseType
  
 # Define the Generate News model

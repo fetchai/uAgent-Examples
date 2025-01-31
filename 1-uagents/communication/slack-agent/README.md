@@ -5,18 +5,19 @@
 
 This agent is designed to send direct messages on Slack. Given a Slack user ID and a message, it delivers the message to the specified user. Note that recipients must belong to the workspace associated with the provided Slack token, follow these steps to set it up:
 
-
 ## Setup Slack Token
 
 To configure a Slack token for sending messages within a workspace, follow these steps:
 
 ## 1. Create a Slack App
+
 1. Go to the [Slack API Dashboard](https://api.slack.com/apps).
 2. Click **Create an App**.
 3. Choose "From scratch" and provide a name for your app.
 4. Select the workspace where the app will be used.
 
 ## 2. Set up Bot Permissions
+
 1. In your app dashboard, go to **OAuth & Permissions**.
 2. Under **Scopes**, add the following **Bot Token Scopes** to allow the app to send messages:
    - `chat:write` – Required to send messages to channels.
@@ -24,6 +25,7 @@ To configure a Slack token for sending messages within a workspace, follow these
 3. Click **Save Changes**.
 
 ## 3. Install the App
+
 1. Go to **Install App** in the sidebar.
 2. Click **Install to Workspace**.
 3. Authorize the app in your workspace.

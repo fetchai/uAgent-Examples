@@ -1,4 +1,4 @@
-from uagents import Agent, Context
+from uagents import Agent
 from uagents.setup import fund_agent_if_low
 from protocols.book import book_proto
 from protocols.query import query_proto, TableStatus

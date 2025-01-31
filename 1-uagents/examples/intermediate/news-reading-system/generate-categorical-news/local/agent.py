@@ -2,8 +2,7 @@
  
 # Importing libraries
 import requests
-import json
-from uagents import Agent, Context, Model, Field, Protocol
+from uagents import Agent, Context, Model, Protocol
 from uagents.setup import fund_agent_if_low
 from ai_engine import UAgentResponse, UAgentResponseType
  

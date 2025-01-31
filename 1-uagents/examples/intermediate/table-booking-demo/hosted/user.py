@@ -3,7 +3,7 @@ from query import (
     QueryTableRequest,
     QueryTableResponse,
 )
-from uagents import Agent, Context
+from uagents import Context
  
 RESTAURANT_ADDRESS = "agent1qw50wcs4nd723ya9j8mwxglnhs2kzzhh0et0yl34vr75hualsyqvqdzl990"
  

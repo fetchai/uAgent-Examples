@@ -1,4 +1,4 @@
-from uagents import Agent, Context, Protocol, Model
+from uagents import Context, Protocol, Model
 import random
 from uagents import Field
 from ai_engine import UAgentResponse, UAgentResponseType

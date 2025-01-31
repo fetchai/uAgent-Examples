@@ -1,4 +1,4 @@
-from uagents import Agent, Context
+from uagents import Context
 
 @agent.on_interval(period=2.0)
 async def say_hello(ctx: Context):

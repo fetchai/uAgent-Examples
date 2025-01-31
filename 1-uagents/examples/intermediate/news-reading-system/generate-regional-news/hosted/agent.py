@@ -1,6 +1,5 @@
 # Import libraries
 import requests
-import json
 from ai_engine import UAgentResponse, UAgentResponseType
  
 # Define dictionary with country codes

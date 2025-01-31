@@ -1,4 +1,4 @@
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Model, Protocol
  
 class Message(Model):
     message: str

@@ -3,7 +3,6 @@ from uagents import Agent, Context, Protocol, Model
 import random
 from uagents import Field
 from ai_engine import UAgentResponse, UAgentResponseType
-import sys
  
 dungeons = Agent(
     name="dungeonsanddragonsdiceroll",

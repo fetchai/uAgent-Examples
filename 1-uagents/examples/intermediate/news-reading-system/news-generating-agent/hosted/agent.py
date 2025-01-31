@@ -2,8 +2,6 @@
 # After running this agent, it can be registered to DeltaV on Agentverse My Agents tab. For registration you will have to use the agent's address.
  
 # Import required libraries
-import requests
-import json
 from ai_engine import UAgentResponse, UAgentResponseType
  
 # Define News Generating Model.

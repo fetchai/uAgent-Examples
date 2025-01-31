@@ -1,4 +1,4 @@
-from uagents import Agent, Context
+from uagents import Context
 import requests
 import json
  

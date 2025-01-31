@@ -3,7 +3,7 @@ import time
 import requests
  
 # Decode the refresh token
-token = f'Bearer <Your_access_token>'
+token = 'Bearer <Your_access_token>'
  
 # Take name of agent from user
 name = input("Please give name of your agent? ")

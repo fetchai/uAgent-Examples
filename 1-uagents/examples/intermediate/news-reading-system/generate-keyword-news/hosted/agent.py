@@ -1,6 +1,5 @@
 # Import libraries
 import requests
-import json
 from ai_engine import UAgentResponse, UAgentResponseType
  
 # Define the Generate News model

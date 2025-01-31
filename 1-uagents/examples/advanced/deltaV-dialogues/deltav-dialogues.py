@@ -1,8 +1,7 @@
 # Import required libraries
-import json
 from ai_engine.chitchat import ChitChatDialogue
 from ai_engine.messages import DialogueMessage
-from uagents import Agent, Context, Model
+from uagents import Context, Model
 
 
 class InitiateChitChatDialogue(Model):

@@ -1,4 +1,4 @@
-from uagents import Agent, Context
+from uagents import Context
  
 @agent.on_event("startup")
 async def initialize_storage(ctx: Context):

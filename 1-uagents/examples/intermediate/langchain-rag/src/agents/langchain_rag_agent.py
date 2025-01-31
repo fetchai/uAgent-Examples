@@ -2,7 +2,6 @@ import traceback
 from uagents import Agent, Context, Protocol
 import validators
 from messages.requests import RagRequest
-import os
 from langchain_openai import ChatOpenAI
 from langchain.prompts import ChatPromptTemplate
 from langchain_community.document_loaders import UnstructuredURLLoader

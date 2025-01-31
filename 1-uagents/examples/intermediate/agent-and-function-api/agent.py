@@ -1,4 +1,4 @@
-from uagents import Agent, Bureau, Context, Model
+from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
 import requests
 from ai_engine import UAgentResponse, UAgentResponseType

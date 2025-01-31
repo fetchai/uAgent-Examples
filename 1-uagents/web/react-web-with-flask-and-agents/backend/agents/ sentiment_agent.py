@@ -1,11 +1,8 @@
 # Import Required libraries
-import requests
 from uagents import Agent, Context, Model
 from uagents.setup import fund_agent_if_low
-import time
 import asyncio
 import aiohttp
-import json
  
 # Define Request and Response Data Models
 class SentimentRequest(Model):

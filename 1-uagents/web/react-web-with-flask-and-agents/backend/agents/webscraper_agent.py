@@ -1,10 +1,7 @@
 # Import Required libraries
-import requests
 import aiohttp
 from uagents import Agent, Context, Model
-from uagents.setup import fund_agent_if_low
 from bs4 import BeautifulSoup
-import time
  
 # Define data Models to handle request
 class wrapRequest(Model):

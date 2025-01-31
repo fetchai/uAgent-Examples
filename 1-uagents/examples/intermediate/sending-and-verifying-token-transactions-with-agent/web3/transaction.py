@@ -61,7 +61,7 @@ async def initiate_transaction(ctx: Context):
     Triggered on startup. Sends a transaction request to the
     transaction processor to initiate a USDC transfer.
     """
-    ctx.logger.info(f"*** Transaction Initiator startup event triggered. ***")
+    ctx.logger.info("*** Transaction Initiator startup event triggered. ***")
     await ctx.send(
         transaction_processor.address,
         TransactionRequest(message="Requesting transaction", action="send_usdc"),

@@ -13,7 +13,7 @@ SCOPE = 'av'
 # Your encoded refresh token here
 refreshed_token = "<YOUR_REFRESH_TOKEN>"
 # Decode the refresh token
-token = f'Bearer <YOUR_ACCESS_TOKEN>'  # Placeholder for initial token
+token = 'Bearer <YOUR_ACCESS_TOKEN>'  # Placeholder for initial token
  
 def refresh_tokens(refresh_token):
     """Attempt to refresh the access and refresh tokens."""

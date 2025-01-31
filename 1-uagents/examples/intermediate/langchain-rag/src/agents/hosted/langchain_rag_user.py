@@ -1,4 +1,4 @@
-from uagents import Agent, Context, Protocol, Field
+from uagents import Context, Protocol, Field
 from ai_engine import UAgentResponse
  
 QUESTION = "How to install uagents using pip"

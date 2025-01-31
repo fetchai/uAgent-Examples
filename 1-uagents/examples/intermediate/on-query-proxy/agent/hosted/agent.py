@@ -1,4 +1,4 @@
-from uagents import Agent, Context, Model
+from uagents import Context, Model
  
 class TestRequest(Model):
     message: str

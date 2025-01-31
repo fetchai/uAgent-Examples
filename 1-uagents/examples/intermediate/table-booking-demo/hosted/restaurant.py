@@ -1,4 +1,3 @@
-from uagents import Agent, Context
 from book import book_proto
 from query import query_proto, TableStatus
  
