@@ -106,7 +106,7 @@ async def on_generate_news_request(ctx: Context, sender: str, msg: GenerateNews)
     ctx.logger.info(f"Received ticket request from {sender} with prompt: {msg.country}")
     try:
         # Get the country code from the country_code dictionary
-        country_code = country_codes.get(msg.country.lower())
+        _ = country_codes.get(msg.country.lower())
         # Generate news based on the requested country and log it on agentverse
         message = await get_regional_news(msg.country)
         ctx.logger.info(f"Message from endpoint: {message}")
@@ -128,6 +128,6 @@ async def on_generate_news_request(ctx: Context, sender: str, msg: GenerateNews)
 
 
 # Include the Generate Regional News protocol in your agent
-generate_news_reg_agent.include(generate_news_protocol)
+generate_news_reg_agent.include(generate_news_reg_protocol)
 
 generate_news_reg_agent.run()

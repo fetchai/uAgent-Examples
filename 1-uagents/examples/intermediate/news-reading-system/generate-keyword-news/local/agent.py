@@ -38,7 +38,7 @@ async def get_keyword_news(keyword):
     # Strip the source, get top 10 news and join the list with nnn to return the news as string and not list - DeltaV compatible type
     titles = [article["title"].split(" - ")[0].strip() for article in news["articles"]]
     titles = titles[:10]
-    results = " nnn ".join([f"{title}" for title in titles])
+    _ = " nnn ".join([f"{title}" for title in titles])
 
 
 # Define a handler for the Keyword News generation protocol

@@ -41,25 +41,15 @@ proto = QuotaProtocol(
 )
 
 
-async def translate(
-    ctx: Context, sender: str, request: TranslationRequest
-) -> str | None:
-    if not rate_limiter.add_request(sender):
-        await ctx.send(
-            sender, ErrorMessage(error="Rate limit exceeded. Try again later.")
-        )
-        return None
-    if request.language_in == "Detect":
-        context = f"Detect the language of the provided text and translate it to {request.language_out}"
-    else:
-        context = f"Translate the provided text from {request.language_in} to {request.language_out}"
-    response = get_completion(context=context, prompt=request.text)
-    return response
-
-
 @proto.on_message(TranslationRequest, replies={TranslationResponse, ErrorMessage})
 async def handle_translation(ctx: Context, sender: str, msg: TranslationRequest):
-    response = await translate(ctx, sender, msg)
+    if msg.language_in == "Detect":
+        context = f"Detect the language of the provided text and translate it to {msg.language_out}"
+    else:
+        context = (
+            f"Translate the provided text from {msg.language_in} to {msg.language_out}"
+        )
+    response = get_completion(context=context, prompt=msg.text)
     if not response:
         await ctx.send(ErrorMessage(error="Error translating text."))
         return
