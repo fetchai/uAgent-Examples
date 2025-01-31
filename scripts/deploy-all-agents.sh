@@ -1,5 +1,5 @@
 HOSTED_AGENTS_PATH="1-uagents"
-CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility") 
+CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility" "communication")
 
 cd $HOSTED_AGENTS_PATH
 

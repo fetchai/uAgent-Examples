@@ -54,6 +54,7 @@ jobs:
                   GEOAPIFY_API_KEY: ${{ secrets.GEOAPIFY_API_KEY }}
                   TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
                   RAPIDAPI_API_KEY: ${{ secrets.RAPIDAPI_API_KEY }}
+                  SAPLING_API_KEY: ${{ secrets.SAPLING_API_KEY }}
 
             - name: Commit and push changes (avctl folders for new agents)
               if: always()
