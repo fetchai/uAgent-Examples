@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "slack-agent"
+version = "0.1.0"
+description = "Slack Agent"
+authors = ["Alejandro <alejandro.madrigal@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.18.0"
+requests = "^2.32.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

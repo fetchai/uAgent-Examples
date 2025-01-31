@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "asset-signal-agent"
+version = "0.1.0"
+description = "This agent chains multiple financial agents together to create a signal for an asset."
+authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.17.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

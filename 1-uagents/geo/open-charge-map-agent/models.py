@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any, Dict, List, Optional
 
 from uagents import Model
 
@@ -13,13 +13,13 @@ class POIAreaRequest(Model):
     radius_in_m: int
     limit: int = 20
     query_string: str
-    filter: dict[str, Any] = {}
+    filter: Dict[str, Any] = {}
 
 
 class POI(Model):
     placekey: str
     location_name: str
-    brands: Optional[list[str]] = None
+    brands: Optional[List[str]] = None
     top_category: Optional[str] = None
     sub_category: Optional[str] = None
     location: Coordinates
@@ -28,11 +28,11 @@ class POI(Model):
     region: Optional[str] = None
     postal_code: str
     iso_country_code: str
-    metadata: Optional[dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class POIResponse(Model):
     loc_search: Coordinates
     radius_in_m: int
     data_origin: str
-    data: list[POI]
+    data: List[POI]

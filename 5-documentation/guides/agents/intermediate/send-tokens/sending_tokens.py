@@ -13,8 +13,8 @@ class TransactionInfo(Model):
 AMOUNT = 100
 DENOM = "atestfet"
 
-alice = Agent(name="alice", seed="alice secret phrase")
-bob = Agent(name="bob", seed="bob secret phrase")
+alice = Agent(name="alice", seed="alice secret phrase", port=8000, endpoint=["http://127.0.0.1:8000/submit"])
+bob = Agent(name="bob", seed="bob secret phrase", port=8001, endpoint=["http://127.0.0.1:8001/submit"])
 
 fund_agent_if_low(bob.wallet.address(), min_balance=AMOUNT)
 

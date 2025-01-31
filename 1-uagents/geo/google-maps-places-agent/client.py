@@ -35,6 +35,15 @@ from datetime import datetime, timedelta
 
 import exceptions
 import requests
+from places import (
+    find_place,
+    place,
+    places,
+    places_autocomplete,
+    places_autocomplete_query,
+    places_nearby,
+    places_photo,
+)
 
 try:  # Python 3
     from urllib.parse import urlencode
@@ -148,8 +157,7 @@ class Client:
         """
         if not key and not (client_secret and client_id):
             raise ValueError(
-                "Must provide API key or enterprise credentials "
-                "when creating client."
+                "Must provide API key or enterprise credentials when creating client."
             )
 
         if key and not key.startswith("AIza"):
@@ -169,7 +177,7 @@ class Client:
 
         if timeout and (connect_timeout or read_timeout):
             raise ValueError(
-                "Specify either timeout, or connect_timeout " "and read_timeout"
+                "Specify either timeout, or connect_timeout and read_timeout"
             )
 
         if connect_timeout and read_timeout:
@@ -177,7 +185,7 @@ class Client:
             chunks = requests.__version__.split(".")
             if int(chunks[0]) < 2 or (int(chunks[0]) == 2 and int(chunks[1]) < 4):
                 raise NotImplementedError(
-                    "Connect/Read timeouts require " "requests v2.4.0 or higher"
+                    "Connect/Read timeouts require requests v2.4.0 or higher"
                 )
             self.timeout = (connect_timeout, read_timeout)
         else:
@@ -201,16 +209,15 @@ class Client:
         self.queries_per_second = queries_per_second
         self.queries_per_minute = queries_per_minute
         try:
-            if (
-                type(self.queries_per_second) == int
-                and type(self.queries_per_minute) == int
+            if isinstance(self.queries_per_second, int) and isinstance(
+                self.queries_per_minute, int
             ):
                 self.queries_quota = math.floor(
                     min(self.queries_per_second, self.queries_per_minute / 60)
                 )
-            elif self.queries_per_second and type(self.queries_per_second) == int:
+            elif self.queries_per_second and isinstance(self.queries_per_second, int):
                 self.queries_quota = math.floor(self.queries_per_second)
-            elif self.queries_per_minute and type(self.queries_per_minute) == int:
+            elif self.queries_per_minute and isinstance(self.queries_per_minute, int):
                 self.queries_quota = math.floor(self.queries_per_minute / 60)
             else:
                 sys.exit(
@@ -457,17 +464,6 @@ class Client:
             "Must provide API key for this API. It does not accept "
             "enterprise credentials."
         )
-
-
-from places import (
-    find_place,
-    place,
-    places,
-    places_autocomplete,
-    places_autocomplete_query,
-    places_nearby,
-    places_photo,
-)
 
 
 def make_api_method(func):

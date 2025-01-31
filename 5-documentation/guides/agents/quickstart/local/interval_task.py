@@ -1,7 +1,7 @@
 from uagents import Agent, Context
 
 # Create an agent named Alice
-alice = Agent(name="alice", seed="YOUR NEW PHRASE")
+alice = Agent(name="alice", seed="YOUR NEW PHRASE", port=8000, endpoint=["http://localhost:8000/submit"])
 
 # Define a periodic task for Alice
 @alice.on_interval(period=2.0)

@@ -15,8 +15,8 @@ def encode(message: str) -> bytes:
     return hasher.digest()
 
 
-alice = Agent(name="alice", seed="alice recovery password")
-bob = Agent(name="bob", seed="bob recovery password")
+alice = Agent(name="alice", seed="alice recovery password", port=8000, endpoint=["http://127.0.0.1:8000/submit"])
+bob = Agent(name="bob", seed="bob recovery password", port=8001, endpoint=["http://127.0.0.1:8001/submit"])
 
 
 @alice.on_interval(period=3.0)
