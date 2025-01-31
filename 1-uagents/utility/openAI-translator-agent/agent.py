@@ -1,12 +1,13 @@
 import os
+from enum import Enum
 
 from ai import get_completion
-from ai_engine import UAgentResponse, UAgentResponseType
-from quota import RateLimiter
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Context, Model
+from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage, Field
 
-AGENT_SEED = os.getenv("AGENT_SEED")
+AGENT_SEED = os.getenv("AGENT_SEED", "openai-translator-test-agent")
+AGENT_NAME = os.getenv("AGENT_NAME", "OpenAI Translator Agent")
 
 
 class TranslationRequest(Model):
@@ -25,63 +26,83 @@ class TranslationResponse(Model):
 
 PORT = 8000
 agent = Agent(
+    name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-rate_limiter = RateLimiter(agent.storage)
 
-translate_proto = Protocol(name="OpenAI-Translation", version="0.1.0")
-ai_engine_translate_proto = Protocol(
-    name="AIEngine-OpenAI-Translation", version="0.1.0"
+proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="OpenAI-Translation",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
 
 
-async def translate(
-    ctx: Context, sender: str, request: TranslationRequest
-) -> str | None:
-    if not rate_limiter.add_request(sender):
-        await ctx.send(
-            sender, ErrorMessage(error="Rate limit exceeded. Try again later.")
-        )
-        return None
-    if request.language_in == "Detect":
-        context = f"Detect the language of the provided text and translate it to {request.language_out}"
-    else:
-        context = f"Translate the provided text from {request.language_in} to {request.language_out}"
-    response = get_completion(context=context, prompt=request.text)
-    return response
-
-
-@agent.on_event("startup")
-async def introduce(ctx: Context):
-    ctx.logger.info(f"Agent address: {agent.address}")
-
-
-@translate_proto.on_message(TranslationRequest, replies={TranslationResponse})
-@rate_limiter.wrap
+@proto.on_message(TranslationRequest, replies={TranslationResponse, ErrorMessage})
 async def handle_translation(ctx: Context, sender: str, msg: TranslationRequest):
-    response = await translate(ctx, sender, msg)
-    if response:
-        await ctx.send(sender, TranslationResponse(text=response))
-
-
-@ai_engine_translate_proto.on_message(
-    AIEngineTranslationRequest, replies={UAgentResponse}
-)
-async def handle_ai_engine_translation(
-    ctx: Context, sender: str, msg: TranslationRequest
-):
-    response = await translate(ctx, sender, msg)
-    if response:
-        await ctx.send(
-            sender, UAgentResponse(type=UAgentResponseType.FINAL, message=response)
+    if msg.language_in == "Detect":
+        context = f"Detect the language of the provided text and translate it to {msg.language_out}"
+    else:
+        context = (
+            f"Translate the provided text from {msg.language_in} to {msg.language_out}"
         )
+    response = get_completion(context=context, prompt=msg.text)
+    if not response:
+        await ctx.send(ErrorMessage(error="Error translating text."))
+        return
+    await ctx.send(sender, TranslationResponse(text=response))
 
 
-agent.include(translate_proto, publish_manifest=True)
-agent.include(ai_engine_translate_proto, publish_manifest=True)
+agent.include(proto, publish_manifest=True)
+
+
+### Health check related code
+def agent_is_healthy() -> bool:
+    """
+    Implement the actual health check logic here.
+
+    For example, check if the agent can connect to a third party API,
+    check if the agent has enough resources, etc.
+    """
+    condition = True  # TODO: logic here
+    return bool(condition)
+
+
+class HealthCheck(Model):
+    pass
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
+class AgentHealth(Model):
+    agent_name: str
+    status: HealthStatus
+
+
+health_protocol = QuotaProtocol(
+    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+)
+
+
+@health_protocol.on_message(HealthCheck, replies={AgentHealth})
+async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
+    status = HealthStatus.UNHEALTHY
+    try:
+        if agent_is_healthy():
+            status = HealthStatus.HEALTHY
+    except Exception as err:
+        ctx.logger.error(err)
+    finally:
+        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
+
+
+agent.include(health_protocol, publish_manifest=True)
 
 
 if __name__ == "__main__":

@@ -10,6 +10,7 @@ SLACK_TOKEN = os.getenv("SLACK_TOKEN")
 
 SLACK_URL = "https://slack.com/api"
 
+
 class SlackMessageRequest(Model):
     id: str
     text: str
@@ -33,26 +34,26 @@ proto = QuotaProtocol(
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=3),
 )
 
+
 def open_dm_channel(user_id):
     try:
         response = requests.post(
             f"{SLACK_URL}/conversations.open",
             headers={
                 "Authorization": f"Bearer {SLACK_TOKEN}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            json={"users": user_id}
+            json={"users": user_id},
+            timeout=5,
         )
 
         if response.status_code == 200 and response.json().get("ok", False):
             channel_id = response.json()["channel"]["id"]
             return channel_id
-        else:
-            return (
-                f"Failed to open DM channel: {response.json().get('error', 'Unknown error')}"
-            )
+        return f"Failed to open DM channel: {response.json().get('error', 'Unknown error')}"
     except Exception as e:
         return "Error encountered: " + str(e)
+
 
 def send_message(channel, message):
     try:
@@ -60,20 +61,17 @@ def send_message(channel, message):
             f"{SLACK_URL}/chat.postMessage",
             headers={
                 "Authorization": f"Bearer {SLACK_TOKEN}",
-                "Content-Type": "application/json"
+                "Content-Type": "application/json",
             },
-            json={
-                "channel": channel,
-                "text": message
-            }
+            json={"channel": channel, "text": message},
+            timeout=5,
         )
 
         if response.status_code == 200 and response.json().get("ok", False):
-            return (f"Message sent successfully: {response.json()['ts']}")
-        else:
-            return (
-                f"Failed to send message: {response.json().get('error', 'Unknown error')}"
-            )
+            return f"Message sent successfully: {response.json()['ts']}"
+        return (
+            f"Failed to send message: {response.json().get('error', 'Unknown error')}"
+        )
     except Exception as e:
         return "Error encountered: " + str(e)
 

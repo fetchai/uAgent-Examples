@@ -1,4 +1,4 @@
-from uagents import Agent, Context, Model
+from uagents import Agent, Context
 from tortoise import Tortoise
 from models import Availability, RoomRequest, RoomResponse
 
@@ -36,7 +36,7 @@ async def message_handler(ctx: Context, sender: str, msg: RoomRequest):
     availability = await Availability.first()
     success = False
     if availability.room_available:
-        ctx.logger.info(f"Room available, attempting to book")
+        ctx.logger.info("Room available, attempting to book")
         if availability.min_price <= msg.max_price:
             success = True
             ctx.logger.info(f"Offer of ${msg.max_price} accepted!")
@@ -45,7 +45,7 @@ async def message_handler(ctx: Context, sender: str, msg: RoomRequest):
         else:
             ctx.logger.info(f"Offer of ${msg.max_price} was to low, won't accept ")
     else:
-        ctx.logger.info(f"Room unavailable")
+        ctx.logger.info("Room unavailable")
 
     await ctx.send(sender, RoomResponse(success=success))
 

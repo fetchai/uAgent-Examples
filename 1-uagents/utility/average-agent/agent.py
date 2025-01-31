@@ -1,14 +1,20 @@
 import os
 import statistics
+from enum import Enum
+from typing import List, Set, Tuple, Union
 
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Context, Model
+from uagents.experimental.quota import QuotaProtocol
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED")
+AGENT_SEED = os.getenv("AGENT_SEED", "average-test-agent")
+AGENT_NAME = os.getenv("AGENT_NAME", "Average Agent")
 
 
 class Prompt(Model):
-    data: tuple[int | float, ...] | list[int | float] | set[int | float]
+    data: Union[
+        Tuple[Union[int, float]], List[Union[int, float]], Set[Union[int, float]]
+    ]
 
 
 class Response(Model):
@@ -17,7 +23,7 @@ class Response(Model):
     median_low: float
     median_high: float
     mode: float
-    multi_mode: list[int | float]
+    multi_mode: List[Union[int, float]]
     population_variance: float
     sample_variance: float
     population_standard_deviation: float
@@ -26,18 +32,16 @@ class Response(Model):
 
 PORT = 8000
 agent = Agent(
+    name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
 
-proto = Protocol(name="Average-Statistics", version="0.1.0")
-
-
-@agent.on_event("startup")
-async def introduce(ctx: Context):
-    ctx.logger.info(ctx.agent.address)
+proto = QuotaProtocol(
+    storage_reference=agent.storage, name="Average-Statistics", version="0.1.0"
+)
 
 
 @proto.on_message(Prompt, replies={Response, ErrorMessage})
@@ -71,6 +75,36 @@ async def handle_request(ctx: Context, sender: str, msg: Prompt):
 
 
 agent.include(proto, publish_manifest=True)
+
+
+# Health Check code
+class HealthCheck(Model):
+    pass
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
+class AgentHealth(Model):
+    agent_name: str
+    status: HealthStatus
+
+
+health_protocol = QuotaProtocol(
+    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+)
+
+
+@health_protocol.on_message(HealthCheck, replies={AgentHealth})
+async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
+    await ctx.send(
+        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
+    )
+
+
+agent.include(health_protocol, publish_manifest=True)
 
 
 if __name__ == "__main__":

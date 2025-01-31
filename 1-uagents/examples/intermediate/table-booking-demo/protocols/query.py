@@ -1,27 +1,35 @@
 from typing import List
- 
+
 from uagents import Context, Model, Protocol
- 
+
+
 class TableStatus(Model):
     seats: int
     time_start: int
     time_end: int
- 
+
+
 class QueryTableRequest(Model):
     guests: int
     time_start: int
     duration: int
- 
+
+
 class QueryTableResponse(Model):
     tables: List[int]
- 
+
+
 class GetTotalQueries(Model):
     pass
- 
+
+
 class TotalQueries(Model):
     total_queries: int
+
+
 query_proto = Protocol()
- 
+
+
 @query_proto.on_message(model=QueryTableRequest, replies=QueryTableResponse)
 async def handle_query_request(ctx: Context, sender: str, msg: QueryTableRequest):
     tables = {
@@ -44,7 +52,8 @@ async def handle_query_request(ctx: Context, sender: str, msg: QueryTableRequest
     await ctx.send(sender, QueryTableResponse(tables=available_tables))
     total_queries = int(ctx.storage.get("total_queries") or 0)
     ctx.storage.set("total_queries", total_queries + 1)
- 
+
+
 @query_proto.on_query(model=GetTotalQueries, replies=TotalQueries)
 async def handle_get_total_queries(ctx: Context, sender: str, _msg: GetTotalQueries):
     total_queries = int(ctx.storage.get("total_queries") or 0)
