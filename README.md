@@ -25,4 +25,3 @@ Read our [development guidelines](https://github.com/fetchai/uAgent-Examples/blo
 ## ❓ Issues, Questions, and Discussions
 
 We use [GitHub Issues](https://github.com/fetchai/uAgent-Examples/issues) for tracking requests and bugs, and [GitHub Discussions](https://github.com/fetchai/uAgent-Examples/discussions) for general questions and discussion.
-
