@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+  db:
+    container_name: postgres_container
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - "postgres:/var/lib/postgresql/data"
+      - ./src/db/schemas/employees.sql:/docker-entrypoint-initdb.d/employees.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - agent_network
+  app:
+    build: .
+    container_name: poetry_app
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      - agent_network
+    environment:
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_NAME: ${DB_NAME}
+    command: poetry run python ./src/main.py
+
+volumes:
+  postgres:
+
+networks:
+  agent_network:
+    driver: bridge
