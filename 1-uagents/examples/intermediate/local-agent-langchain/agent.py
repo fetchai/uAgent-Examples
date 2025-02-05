@@ -1,15 +1,18 @@
+from ai_engine import UAgentResponse, UAgentResponseType
 from langchain_community.tools import WikipediaQueryRun
 from langchain_community.utilities import WikipediaAPIWrapper
-from uagents.setup import fund_agent_if_low
-from uagents import Agent, Context, Protocol, Model
-from uagents import Field
-from ai_engine import UAgentResponse, UAgentResponseType
- 
+from uagents import Agent, Context, Field, Model, Protocol
+
+
 # Extend your protocol with Wikipedia data fetching
 class WikiReq(Model):
-    search_keyword: str = Field(description="This describes the keyword you want to search on wiki")
- 
+    search_keyword: str = Field(
+        description="This describes the keyword you want to search on wiki"
+    )
+
+
 SEED_PHRASE = "<Secret Phrase for your agent>"
+
 
 # Now your agent is ready to join the agentverse!
 WikiAgent = Agent(
@@ -22,8 +25,10 @@ WikiAgent = Agent(
 print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
 
 fund_agent_if_low(WikiAgent.wallet.address()) #funding agent.
+
 wiki_protocol = Protocol("Wiki Protocol")
- 
+
+
 @wiki_protocol.on_message(model=WikiReq, replies={UAgentResponse})
 async def load_dalle(ctx: Context, sender: str, msg: WikiReq):
     wikipedia = WikipediaQueryRun(api_wrapper=WikipediaAPIWrapper())
@@ -36,6 +41,7 @@ async def load_dalle(ctx: Context, sender: str, msg: WikiReq):
     await ctx.send(
         sender, UAgentResponse(message=str(result), type=UAgentResponseType.FINAL)
     )
- 
+
+
 WikiAgent.include(wiki_protocol, publish_manifest=True)
 WikiAgent.run()

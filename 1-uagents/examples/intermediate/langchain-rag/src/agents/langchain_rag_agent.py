@@ -1,26 +1,23 @@
 import traceback
-from uagents import Agent, Context, Protocol
-import validators
-from messages.requests import RagRequest
-import os
-from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
-from langchain_community.document_loaders import UnstructuredURLLoader
-import requests
-from bs4 import BeautifulSoup
 from urllib.parse import urlparse
-from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+
+import nltk
+import requests
+import validators
+from ai_engine import UAgentResponse, UAgentResponseType
+from bs4 import BeautifulSoup
+from langchain.prompts import ChatPromptTemplate
 from langchain.retrievers import ContextualCompressionRetriever
 from langchain.retrievers.document_compressors import CohereRerank
-from ai_engine import UAgentResponse, UAgentResponseType
-import nltk
+from langchain_community.document_loaders import UnstructuredURLLoader
+from langchain_community.vectorstores import FAISS
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from messages.requests import RagRequest
+from uagents import Agent, Context, Protocol
 from uagents.setup import fund_agent_if_low
 
 nltk.download("punkt")
 nltk.download("averaged_perceptron_tagger")
-
-LANGCHAIN_RAG_SEED = "YOUR_LANGCHAIN_RAG_SEED"
 
 agent = Agent(
     name="langchain_rag_agent",
@@ -31,6 +28,7 @@ agent = Agent(
 fund_agent_if_low(agent.wallet.address())
 
 docs_bot_protocol = Protocol("DocsBot")
+
 
 PROMPT_TEMPLATE = """
 Answer the question based only on the following context:
@@ -128,6 +126,7 @@ async def answer_question(ctx: Context, sender: str, msg: RagRequest):
 
 
 agent.include(docs_bot_protocol, publish_manifest=True)
+
 
 if __name__ == "__main__":
     agent.run()

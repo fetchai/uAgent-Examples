@@ -1,12 +1,16 @@
 import os
 import time
+from enum import Enum
+from typing import Dict
 
 import requests
-from quota import RateLimiter
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Context, Model
+from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED")
+AGENT_SEED = os.getenv("AGENT_SEED", "company-overview")
+AGENT_NAME = os.getenv("AGENT_NAME", "Company Overview Agent")
+
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
 if ALPHAVANTAGE_API_KEY is None:
@@ -18,17 +22,23 @@ class CompanyOverviewRequest(Model):
 
 
 class CompanyOverviewResponse(Model):
-    overview: dict[str, str]
+    overview: Dict[str, str]
 
 
 PORT = 8000
 agent = Agent(
+    name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-proto = Protocol(name="Company-Overview", version="0.1.0")
+proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="Company-Overview",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
 
 
 def fetch_overview_json(ticker: str) -> dict:
@@ -49,14 +59,6 @@ def fetch_overview_json(ticker: str) -> dict:
     return data
 
 
-@agent.on_event("startup")
-async def introduce(ctx: Context):
-    ctx.logger.info(ctx.agent.address)
-
-
-rate_limiter = RateLimiter(agent.storage)
-
-
 @proto.on_message(
     CompanyOverviewRequest, replies={CompanyOverviewResponse, ErrorMessage}
 )
@@ -70,11 +72,6 @@ async def handle_request(ctx: Context, sender: str, msg: CompanyOverviewRequest)
             await ctx.send(sender, CompanyOverviewResponse(overview=cache))
             return
 
-    await inner_handle_request(ctx, sender, msg)
-
-
-@rate_limiter.wrap
-async def inner_handle_request(ctx: Context, sender: str, msg: CompanyOverviewRequest):
     try:
         ctx.logger.info(f"Fetching company overview for ticker: {msg.ticker}")
         output_json = fetch_overview_json(msg.ticker)
@@ -94,6 +91,45 @@ async def inner_handle_request(ctx: Context, sender: str, msg: CompanyOverviewRe
 
 
 agent.include(proto, publish_manifest=True)
+
+
+# Health check related code
+def agent_is_healthy():
+    return True
+
+
+class HealthCheck(Model):
+    pass
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
+class AgentHealth(Model):
+    agent_name: str
+    status: HealthStatus
+
+
+health_protocol = QuotaProtocol(
+    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+)
+
+
+@health_protocol.on_message(HealthCheck, replies={AgentHealth})
+async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
+    status = HealthStatus.UNHEALTHY
+    try:
+        agent_is_healthy()
+        status = HealthStatus.HEALTHY
+    except Exception as err:
+        ctx.logger.error(err)
+    finally:
+        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
+
+
+agent.include(health_protocol, publish_manifest=True)
 
 if __name__ == "__main__":
     agent.run()

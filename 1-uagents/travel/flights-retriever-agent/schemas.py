@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import List
 
 from uagents import Field, Model
 
@@ -29,4 +30,4 @@ class Flight(Model):
 
 
 class FlightsSearchResponse(Model):
-    flights: list[Flight]
+    flights: List[Flight]

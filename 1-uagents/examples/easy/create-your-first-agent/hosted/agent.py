@@ -1,5 +1,7 @@
 # Import necessary classes from the uAgents library
-from uagents import Agent, Context
+from uagents import Context
+
+
 # Function to be called when the agent is started
 @agent.on_event("startup")
 async def introduce_agent(ctx: Context):

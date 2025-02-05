@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "tech-analysis-agent"
 version = "0.1.0"
-description = "This agent helps you to get techincal analysis of stock ticker using different indicators."
+description = "This agent helps you to get technical analysis of stock ticker using different indicators."
 authors = ["abhifetch <abhi.gangani@fetch.ai>"]
 readme = "README.md"
 

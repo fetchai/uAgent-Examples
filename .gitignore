@@ -1,8 +1,9 @@
-# AVCTL 
+# AVCTL
 .secrets
 
 # Misc
 *.json
+!db.json
 !project.json
 .history
 

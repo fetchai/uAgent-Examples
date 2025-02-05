@@ -1,13 +1,16 @@
 import os
 import time
+from enum import Enum
 
 import openai
 import requests
-from quota import RateLimiter
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Context, Model
+from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED")
+AGENT_SEED = os.getenv("AGENT_SEED", "ticker-agent")
+AGENT_NAME = os.getenv("AGENT_NAME", "Company Ticker Resolver Agent")
+
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
@@ -25,12 +28,19 @@ class TickerResponse(Model):
 
 PORT = 8000
 agent = Agent(
+    name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-proto = Protocol(name="Company-Ticker-Resolver", version="0.1.0")
+
+proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="Company-Ticker-Resolver",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
 
 
 def get_verified_ticker(company_name) -> str:
@@ -83,14 +93,6 @@ def get_verified_ticker(company_name) -> str:
     return verified_ticker
 
 
-@agent.on_event("startup")
-async def introduce(ctx: Context):
-    ctx.logger.info(ctx.agent.address)
-
-
-rate_limiter = RateLimiter(agent.storage)
-
-
 @proto.on_message(TickerRequest, replies={TickerResponse, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: TickerRequest):
     ctx.logger.info(f"Received Ticker request for company: {msg.company}")
@@ -98,14 +100,9 @@ async def handle_request(ctx: Context, sender: str, msg: TickerRequest):
     if cache:
         if int(time.time()) - cache["timestamp"] < 86400:
             ctx.logger.info(f"Sending cached data for company: {msg.company}")
-            await ctx.send(sender, TickerResponse(overview=cache["ticker"]))
+            await ctx.send(sender, TickerResponse(ticker=cache["ticker"]))
             return
 
-    await inner_handle_request(ctx, sender, msg)
-
-
-@rate_limiter.wrap
-async def inner_handle_request(ctx: Context, sender: str, msg: TickerRequest):
     try:
         ticker = get_verified_ticker(msg.company)
     except Exception as err:
@@ -124,6 +121,46 @@ async def inner_handle_request(ctx: Context, sender: str, msg: TickerRequest):
 
 
 agent.include(proto, publish_manifest=True)
+
+
+# Health check related code
+def agent_is_healthy():
+    return True
+
+
+class HealthCheck(Model):
+    pass
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
+class AgentHealth(Model):
+    agent_name: str
+    status: HealthStatus
+
+
+health_protocol = QuotaProtocol(
+    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+)
+
+
+@health_protocol.on_message(HealthCheck, replies={AgentHealth})
+async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
+    status = HealthStatus.UNHEALTHY
+    try:
+        agent_is_healthy()
+        status = HealthStatus.HEALTHY
+    except Exception as err:
+        ctx.logger.error(err)
+    finally:
+        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
+
+
+agent.include(health_protocol, publish_manifest=True)
+
 
 if __name__ == "__main__":
     agent.run()
