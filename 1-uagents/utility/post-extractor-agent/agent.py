@@ -35,8 +35,12 @@ agent = Agent(
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-proto = Protocol(name="Post-Extractor", version="0.1.0")
-
+proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="Post-Extractor",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
 
 auth = requests.auth.HTTPBasicAuth(REDDIT_ID, REDDIT_SECRET)
 data = {
