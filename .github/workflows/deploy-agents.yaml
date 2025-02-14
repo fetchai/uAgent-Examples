@@ -63,9 +63,9 @@ jobs:
         run: |
           git add 1-uagents/**.avctl**
           if git diff --cached --quiet 1-uagents/**.avctl**; then
-            echo "new=true" >> "$GITHUB_OUTPUT"
-          else
             echo "new=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "new=true" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Create Pull Request
