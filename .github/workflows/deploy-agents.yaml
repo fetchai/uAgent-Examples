@@ -61,7 +61,8 @@ jobs:
       - name: Check for newly deployed agents
         id: check-new-agents
         run: |
-          if git diff --quiet 1-uagents/**.avctl**; then
+          git add 1-uagents/**.avctl**
+          if git diff --cached --quiet 1-uagents/**.avctl**; then
             echo "new=true" >> "$GITHUB_OUTPUT"
           else
             echo "new=false" >> "$GITHUB_OUTPUT"
