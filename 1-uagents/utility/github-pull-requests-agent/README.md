@@ -70,7 +70,7 @@ class GitHubPRResponse(Model):
 
 agent = Agent()
 
-GITHUB_REPO_AGENT_ADDRESS = "<deployed_agent_address>"
+GITHUB_REPO_AGENT_ADDRESS = "{{ .Agent.Address }}>"
 
 # Organisation name and repo name
 organisation_name = "fetchai"

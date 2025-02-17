@@ -47,7 +47,7 @@ class WeatherForecastResponse(Model):
 
 agent = Agent()
 
-AI_AGENT_ADDRESS = "<deployed_agent_address>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}>"
 
 location = "London"
 
