@@ -39,7 +39,7 @@ class GrammarCheckResponse(Model):
 
 agent = Agent()
 
-GRAMMAR_CHECK_AGENT_ADDRESS = "<deployed_agent_address>"
+GRAMMAR_CHECK_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 
 # Input: Text with grammatical and spelling mistakes

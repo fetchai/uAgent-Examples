@@ -108,7 +108,7 @@ class FlightsSearchResponse(Model):
 
 agent = Agent()
 
-flights_agent_address = "<deployed_agent_address>"
+flights_agent_address = "{{ .Agent.Address }}"
 
 
 msg_request = FlightsSearchRequest(
