@@ -41,7 +41,7 @@ class StockPriceResponse(Model):
 agent = Agent()
 
 
-STOCK_PRICE_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+STOCK_PRICE_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompts = [
     "AMZN",

@@ -43,7 +43,7 @@ class TextResponse(Model):
 agent = Agent()
 
 
-AI_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompts = [
     "How is the weather in London today?",

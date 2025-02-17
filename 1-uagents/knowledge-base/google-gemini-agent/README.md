@@ -60,7 +60,7 @@ class Response(Model):
 agent = Agent()
 
 
-AI_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompts = [
     "What is the square root of 123456789?",

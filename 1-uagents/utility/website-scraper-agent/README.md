@@ -42,7 +42,7 @@ class WebsiteScraperResponse(Model):
 agent = Agent()
 
 
-AI_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 website_url = "https://fetch.ai/"
 

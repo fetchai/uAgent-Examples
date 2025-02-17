@@ -56,7 +56,7 @@ class GitHubOrganisationResponse(Model):
 
 agent = Agent()
 
-GITHUB_ORG_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+GITHUB_ORG_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 organisation_name = "fetchai"
 

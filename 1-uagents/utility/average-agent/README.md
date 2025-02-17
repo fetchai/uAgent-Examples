@@ -60,7 +60,7 @@ class Response(Model):
 agent = Agent()
 
 
-AVERAGE_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+AVERAGE_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompts = [
     (1, 6, 3, 7, 2, 5, 8, 3, 5, 12),  # tuple

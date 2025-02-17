@@ -88,7 +88,7 @@ class GeoParkingResponse(Model):
 agent = Agent()
 
 
-AI_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 latitude = 35.7174747
 longitude = 139.7941792

@@ -39,7 +39,7 @@ class PostsResponse(Model):
 agent = Agent()
 
 
-POST_AGENT_ADDRESS = = "{{ .Agent.Address }}>"
+POST_AGENT_ADDRESS = = "{{ .Agent.Address }}"
 LIMIT = 5
 
 @agent.on_event("startup")

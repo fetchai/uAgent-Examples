@@ -43,7 +43,7 @@ class FinancialSentimentResponse(Model):
 
 agent = Agent()
 
-AI_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompt = (
     "Apple has launched its iphone 16 and the sales are half the times of iphone 15."

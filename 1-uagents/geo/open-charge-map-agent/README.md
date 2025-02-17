@@ -88,7 +88,7 @@ from uagents import Agent, Context
 agent = Agent()
 
 
-OPEN_CHARGE_MAP_AGENT = "{{ .Agent.Address }}>"
+OPEN_CHARGE_MAP_AGENT = "{{ .Agent.Address }}"
 
 example_request = POIAreaRequest(
     loc_search=Coordinates(latitude=48.140505822096365, longitude=11.559987118245475),

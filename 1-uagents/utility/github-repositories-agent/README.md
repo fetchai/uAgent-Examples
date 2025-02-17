@@ -87,7 +87,7 @@ class GitHubRepoResponse(Model):
 
 agent = Agent()
 
-GITHUB_REPO_AGENT_ADDRESS = "{{ .Agent.Address }}>"
+GITHUB_REPO_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 organisation_name = "fetchai"
 
