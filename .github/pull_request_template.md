@@ -19,12 +19,10 @@ _What type of change does this pull request make (put an `x` in the boxes that a
 
 _Put an `x` in the boxes that apply:_
 
-- [ ] I have read the [CONTRIBUTING](https://github.com/fetchai/uAgents/blob/main/CONTRIBUTING.md) guide 
-- [ ] Checks and tests pass locally
+- [ ] I have read the [CONTRIBUTING](https://github.com/fetchai/uAgents/blob/main/CONTRIBUTING.md) guide
 
 ### If applicable
 
-- [ ] I have added tests that prove my fix is effective or that my feature works
 - [ ] I have added/updated the documentation
 
 ## Further comments
