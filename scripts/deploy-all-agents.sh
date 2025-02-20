@@ -14,7 +14,7 @@ for category in ${CATEGORIES[@]}; do
                 echo "Adding secret $key to agent $agent..."
                 echo "$key=$value" >> .secrets
             fi
-        done < <(printenv | grep API_KEY)
+        done < <(printenv)
 
         # Create a .avctl folder for new agents if it doesn't exist
         avctl hosting init
