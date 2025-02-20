@@ -57,6 +57,9 @@ jobs:
           TAVILY_API_KEY: ${{ secrets.TAVILY_API_KEY }}
           RAPIDAPI_API_KEY: ${{ secrets.RAPIDAPI_API_KEY }}
           SAPLING_API_KEY: ${{ secrets.SAPLING_API_KEY }}
+          REDDIT_USER: ${{ secrets.REDDIT_USER }}
+          REDDIT_ID: ${{ secrets.REDDIT_ID }}
+          REDDIT_SECRET: ${{ secrets.REDDIT_SECRET }}
 
       - name: Check for newly deployed agents
         id: check-new-agents
