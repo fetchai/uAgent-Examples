@@ -12,7 +12,7 @@ for category in ${CATEGORIES[@]}; do
         while IFS='=' read -r key value; do
             if cat *.py | grep -q $key; then
                 echo "Adding secret $key to agent $agent..."
-                echo "$key=$value" # >> .secrets
+                echo "$key=$value" >> .secrets
             fi
         done < <(printenv | grep API_KEY)
 
