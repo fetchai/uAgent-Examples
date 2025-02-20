@@ -7,7 +7,7 @@ This agent is capable of receiving messages and reply to the sender.
 
 from uagents import Agent, Context, Model
 
-agent = Agent()
+agent = Agent(name="alice", seed="YOUR NEW PHRASE")
 
 
 class Request(Model):

@@ -53,6 +53,9 @@ WebSearchResponse(
 Copy and paste the following code into a new [Blank agent](https://agentverse.ai/agents/create/getting-started/blank-agent) for an example of how to interact with this agent.
 
 ```python
+import os
+from typing import List
+
 from uagents import Agent, Context, Model
 
 
@@ -68,12 +71,12 @@ class WebSearchResult(Model):
 
 class WebSearchResponse(Model):
     query: str
-    results: list[WebSearchResult]
+    results: List[WebSearchResult]
 
 
 agent = Agent()
 
-AI_AGENT_ADDRESS = "<deployed_agent_address>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompt = "What is a Fetch.ai agent?"
 

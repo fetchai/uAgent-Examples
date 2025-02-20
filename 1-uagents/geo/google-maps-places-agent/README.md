@@ -52,7 +52,7 @@ The example only prints out the name of found places. See the `communication.POI
 Copy and paste the following code into a new [Blank agent](https://agentverse.ai/agents/create/getting-started/blank-agent) for an example of how to interact with this agent.
 
 ```python
-from typing import Any
+from typing import Any, Dict, List, Optional
 
 from uagents import Model
 
@@ -67,36 +67,36 @@ class POIAreaRequest(Model):
     radius_in_m: int
     limit: int = 20
     query_string: str
-    filter: dict[str, Any] = {}
+    filter: Dict[str, Any] = {}
 
 
 class POI(Model):
     placekey: str
     location_name: str
-    brands: list[str]
-    top_category: str
-    sub_category: str
+    brands: Optional[List[str]] = None
+    top_category: Optional[str] = None
+    sub_category: Optional[str] = None
     location: Coordinates
     address: str
     city: str
-    region: str
+    region: Optional[str] = None
     postal_code: str
     iso_country_code: str
-    metadata: dict[str, Any]
+    metadata: Optional[Dict[str, Any]] = None
 
 
 class POIResponse(Model):
     loc_search: Coordinates
     radius_in_m: int
     data_origin: str
-    data: list[POI]
+    data: List[POI]
 
 
 from uagents import Agent, Context
 
 agent = Agent()
 
-GMAPS_AGENT_ADDRESS = "<deployed_agent_address>"
+GMAPS_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 example_request = POIAreaRequest(
     loc_search=Coordinates(latitude=48.140505822096365, longitude=11.559987118245475),

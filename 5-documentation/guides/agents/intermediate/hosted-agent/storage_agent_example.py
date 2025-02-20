@@ -1,6 +1,6 @@
 from uagents import Agent, Context
 
-agent = Agent()
+agent = Agent(name="Hosted", seed="your_seed_phrase", port=8000, endpoint=["http://127.0.0.1:8000/submit"])
 
 global_counter = 0
 

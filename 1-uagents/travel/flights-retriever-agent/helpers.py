@@ -10,7 +10,9 @@ from uagents.storage import StorageAPI
 
 RAPIDAPI_API_KEY = os.environ.get("RAPIDAPI_API_KEY")
 
-assert RAPIDAPI_API_KEY, "RAPIDAPI_API_KEY environment variable is missing from .env"
+assert (
+    RAPIDAPI_API_KEY
+), "RAPIDAPI_API_KEY environment variable is missing from .secrets file."
 
 SEARCH_AIRPORT = "https://sky-scrapper.p.rapidapi.com/api/v1/flights/searchAirport"
 RAPIDAPI_SKY_SCRAPPER_URL = "https://sky-scrapper.p.rapidapi.com"

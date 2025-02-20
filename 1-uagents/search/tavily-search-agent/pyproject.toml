@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "tavily-agent"
 version = "0.1.0"
-description = "Tavily Agent"
+description = "TaVILY Agent"
 authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
 readme = "README.md"
 

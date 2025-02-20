@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "blog-creator-agent"
+version = "0.1.0"
+description = "This agent combines a topic extraction agent with a blog generator, transforming Reddit posts into a blog based on a chosen topic."
+authors = ["Alejandro <alejandro.madrigal@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.17.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

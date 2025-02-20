@@ -4,7 +4,7 @@ This uAgent queries all public repositories of a given GitHub username, ordered 
 
 ## Overview:
 
-This is a DeltaV compatible agent connected to the agentverse. The agent has `username` and `token` fields. `username` refers to the case sensative GitHub account username. `token` can be obtained by following [github's guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
+This is a DeltaV compatible agent connected to the agentverse. The agent has `username` and `token` fields. `username` refers to the case sensitive GitHub account username. `token` can be obtained by following [github's guide](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens).
 
 ## Prerequisites
 

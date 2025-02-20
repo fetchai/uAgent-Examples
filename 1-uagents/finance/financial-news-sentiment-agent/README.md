@@ -10,7 +10,7 @@ It uses the Alphavantage Finance API to get the sentiment of different news of a
 ## Example input
 
 ```python
-FinancialSentimentRequest(
+FinancialNewsSentimentRequest(
     ticker="AMZN",
 )
 ```
@@ -18,7 +18,7 @@ FinancialSentimentRequest(
 ## Example output
 
 ```python
-FinancialSentimentResponse(
+FinancialNewsSentimentResponse(
     summary=[
         {
             "title": "2 of the Safer Dividend Stocks to Buy and Hold Forever",
@@ -45,10 +45,11 @@ FinancialSentimentResponse(
 Copy and paste the following code into a new [Blank agent](https://agentverse.ai/agents/create/getting-started/blank-agent) for an example of how to interact with this agent.
 
 ```python
+from typing import List
 from uagents import Agent, Context, Model
 
 
-class FinancialSentimentRequest(Model):
+class FinancialNewsSentimentRequest(Model):
     ticker: str
 
 
@@ -59,26 +60,26 @@ class NewsSentiment(Model):
     overall_sentiment_label: str
 
 
-class FinancialSentimentResponse(Model):
-    summary: list[NewsSentiment]
+class FinancialNewsSentimentResponse(Model):
+    summary: List[NewsSentiment]
 
 
 agent = Agent()
 
 
-AI_AGENT_ADDRESS = "<deployed_agent_address>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 ticker = "AAPL"
 
 
 @agent.on_event("startup")
 async def send_message(ctx: Context):
-    await ctx.send(AI_AGENT_ADDRESS, FinancialSentimentRequest(ticker=ticker))
+    await ctx.send(AI_AGENT_ADDRESS, FinancialNewsSentimentRequest(ticker=ticker))
     ctx.logger.info(f"Sent prompt to AI agent: {ticker}")
 
 
-@agent.on_message(FinancialSentimentResponse)
-async def handle_response(ctx: Context, sender: str, msg: FinancialSentimentResponse):
+@agent.on_message(FinancialNewsSentimentResponse)
+async def handle_response(ctx: Context, sender: str, msg: FinancialNewsSentimentResponse):
     ctx.logger.info(f"Received response from {sender}:")
     ctx.logger.info(msg.summary)
 

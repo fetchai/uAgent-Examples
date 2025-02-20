@@ -32,7 +32,7 @@ RETURN_INSTRUCTIONS:
 
 FUNCTION_PARAMETER_PROMPT = """
 You are supposed to extract the values of function parameters from user input and return them in a dictionary. 
-These extracted parameters will be used to make a fuction call later....
+These extracted parameters will be used to make a function call later....
 
 Below are the parameters and their data-type that the function takes:
 {function_parameters}

@@ -38,10 +38,11 @@ Copy and paste the following code into a new [Blank agent](https://agentverse.ai
 
 ```python
 from uagents import Agent, Context, Model
+from typing import Union, List, Set, Tuple
 
 
 class Prompt(Model):
-    data: tuple[int | float, ...] | list[int | float] | set[int | float]
+    data: Union[Tuple[Union[int, float]], List[Union[int, float]], Set[Union[int, float]]]
 
 
 class Response(Model):
@@ -50,7 +51,7 @@ class Response(Model):
     median_low: float
     median_high: float
     mode: float
-    multi_mode: list[int | float]
+    multi_mode: List[Union[int, float]]
     population_variance: float
     sample_variance: float
     population_standard_deviation: float
@@ -60,18 +61,13 @@ class Response(Model):
 agent = Agent()
 
 
-AVERAGE_AGENT_ADDRESS = "<deployed_agent_address>"
+AVERAGE_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompts = [
     (1, 6, 3, 7, 2, 5, 8, 3, 5, 12),  # tuple
     [-3, 5, 8, -2, 4, 6, 8, 3, 5, 12],  # list
     set([1.5, 6.3, 3.7, -7.2, 2.9, 5.8, 8.3, -5.5, 12.1]),  # set
 ]
-
-
-@agent.on_event("startup")
-async def handle_startup(ctx: Context):
-    ctx.storage.clear()
 
 
 @agent.on_event("startup")
@@ -87,11 +83,11 @@ async def send_message(ctx: Context):
 @agent.on_message(Response)
 async def handle_response(ctx: Context, sender: str, msg: Response):
     m = ctx.storage.get("matrix") or {}
-    ctx.logger.info(f"Received response from: {sender}")
+    ctx.logger.info(f"Received response: {msg}")
     if str(ctx.session) not in m:  # this should never happen
         ctx.logger.error("Session not found in storage.")
         return
-    m[str(ctx.session)]["response"] = msg.model_dump()
+    m[str(ctx.session)]["response"] = msg.dict()
     ctx.storage.set("matrix", m)
 
 
@@ -118,3 +114,4 @@ if __name__ == "__main__":
    ```bash
    python agent.py
    ```
+

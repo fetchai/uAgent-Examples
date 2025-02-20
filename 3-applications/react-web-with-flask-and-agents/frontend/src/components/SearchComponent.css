@@ -1,0 +1,31 @@
+.search-area {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100px; 
+    background-color: #007BFF;
+    }
+  
+.search-area form {
+    display: flex;
+    gap: 20px;
+    }
+  
+.search-area input {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    }
+  
+.search-area button {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+    }
+  
+.search-area button:hover {
+    background-color: #004494;
+    }

@@ -42,7 +42,7 @@ class StockPriceResponse(Model):
 agent = Agent()
 
 
-STOCK_PRICE_AGENT_ADDRESS = "<deployed_agent_address>"
+STOCK_PRICE_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 prompts = [
     "AMZN",
@@ -53,7 +53,7 @@ prompts = [
 @agent.on_event("startup")
 async def send_message(ctx: Context):
     for prompt in prompts:
-        await ctx.send(AI_AGENT_ADDRESS, StockPriceRequest(ticker=prompt))
+        await ctx.send(STOCK_PRICE_AGENT_ADDRESS, StockPriceRequest(ticker=prompt))
         ctx.logger.info(f"Sent prompt to agent: {prompt}")
 
 

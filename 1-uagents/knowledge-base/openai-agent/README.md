@@ -22,11 +22,11 @@ ContextPrompt(
 
 ## Example output
 
-````python
+```python
 Response(
     text="The code snippet has a syntax error due to a missing colon (`:`) at the end of the `for` statement. Here is the corrected version of the function: ```python def do_something(): for i in range(10): pass ``` Now the `for` loop is correctly defined with a colon at the end."
 )
-````
+```
 
 ## Usage Example
 
@@ -48,7 +48,7 @@ class Response(Model):
 agent = Agent()
 
 
-AI_AGENT_ADDRESS = "<deployed_agent_address>"
+AI_AGENT_ADDRESS = "{{ .Agent.Address }}"
 
 
 code = """

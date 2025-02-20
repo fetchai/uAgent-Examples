@@ -8,6 +8,8 @@ loop = asyncio.get_event_loop()
 agent = Agent(
     name="looper",
     seed="<YOUR_SEED>",
+    port=8001,
+    endpoint=["http://127.0.0.1:8001/submit"],
 )
 
 bureau = Bureau(

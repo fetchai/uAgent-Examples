@@ -1,11 +1,13 @@
 import os
+from enum import Enum
 
 import requests
-from quota import RateLimiter
-from uagents import Agent, Context, Model, Protocol
+from uagents import Agent, Context, Model
+from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
-AGENT_SEED = os.getenv("AGENT_SEED")
+AGENT_SEED = os.getenv("AGENT_SEED", "weather-agent")
+AGENT_NAME = os.getenv("AGENT_NAME", "Weather Agent")
 API_KEY = os.getenv("WEATHERAPI_KEY")
 
 
@@ -23,14 +25,18 @@ class WeatherForecastResponse(Model):
 
 PORT = 8000
 agent = Agent(
+    name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-weather_proto = Protocol(name="Weather-Agent-Protocol", version="0.1.0")
-
-rate_limiter = RateLimiter(agent.storage)
+proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="Weather-Agent-Protocol",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
 
 
 async def get_weather(location) -> dict:
@@ -57,15 +63,9 @@ async def get_weather(location) -> dict:
     }
 
 
-@agent.on_event("startup")
-async def introduce(ctx: Context):
-    ctx.logger.info(ctx.agent.address)
-
-
-@weather_proto.on_message(
+@proto.on_message(
     WeatherForecastRequest, replies={WeatherForecastResponse, ErrorMessage}
 )
-@rate_limiter.wrap
 async def handle_request(ctx: Context, sender: str, msg: WeatherForecastRequest):
     ctx.logger.info(f"Received Address: {msg.location}")
     try:
@@ -80,7 +80,54 @@ async def handle_request(ctx: Context, sender: str, msg: WeatherForecastRequest)
     await ctx.send(sender, WeatherForecastResponse(**weather_forecast))
 
 
-agent.include(weather_proto, publish_manifest=True)
+agent.include(proto, publish_manifest=True)
+
+
+### Health check related code
+def agent_is_healthy() -> bool:
+    """
+    Implement the actual health check logic here.
+
+    For example, check if the agent can connect to a third party API,
+    check if the agent has enough resources, etc.
+    """
+    condition = True  # TODO: logic here
+    return bool(condition)
+
+
+class HealthCheck(Model):
+    pass
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
+class AgentHealth(Model):
+    agent_name: str
+    status: HealthStatus
+
+
+health_protocol = QuotaProtocol(
+    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+)
+
+
+@health_protocol.on_message(HealthCheck, replies={AgentHealth})
+async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
+    status = HealthStatus.UNHEALTHY
+    try:
+        if agent_is_healthy():
+            status = HealthStatus.HEALTHY
+    except Exception as err:
+        ctx.logger.error(err)
+    finally:
+        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
+
+
+agent.include(health_protocol, publish_manifest=True)
+
 
 if __name__ == "__main__":
     agent.run()
