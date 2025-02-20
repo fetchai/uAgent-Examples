@@ -22,9 +22,9 @@ class RedditPostsResponse(Model):
 
 AGENT_NAME = "Post Extractor Agent"
 AGENT_SEED = os.getenv("AGENT_SEED", "your-post-agent-seed")
-REDDIT_ID = os.getenv("REDDIT_ID")
-REDDIT_SECRET = os.getenv("REDDIT_SECRET")
-REDDIT_USER = os.getenv("REDDIT_USER")
+REDDIT_ID = os.getenv("REDDIT_ID_KEY")
+REDDIT_SECRET = os.getenv("REDDIT_SECRET_KEY")
+REDDIT_USER = os.getenv("REDDIT_USER_KEY")
 
 
 PORT = 8000
