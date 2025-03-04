@@ -20,7 +20,7 @@ alice = Agent(name="alice", seed="alice secret phrase")
 bob = Agent(name="bob", seed="bob secret phrase")
 
 
-fund_agent_if_low(bob.wallet.address().data, min_balance=AMOUNT)
+fund_agent_if_low(bob.wallet.address(), min_balance=AMOUNT)
 
 
 @alice.on_interval(period=10.0)
@@ -28,9 +28,7 @@ async def request_funds(ctx: Context):
     await ctx.send(
         bob.address,
         PaymentRequest(
-            wallet_address=alice.wallet.address().data,
-            amount=AMOUNT,
-            denom=DENOM,
+            wallet_address=str(alice.wallet.address()), amount=AMOUNT, denom=DENOM
         ),
     )
 
@@ -54,10 +52,7 @@ async def send_payment(ctx: Context, sender: str, msg: PaymentRequest):
 
     # send the payment
     transaction = ctx.ledger.send_tokens(
-        msg.wallet_address,  # type: ignore (will be cast to str automatically)
-        msg.amount,
-        msg.denom,
-        bob.wallet,
+        msg.wallet_address, msg.amount, msg.denom, bob.wallet
     )
 
     # send the tx hash so alice can confirm
