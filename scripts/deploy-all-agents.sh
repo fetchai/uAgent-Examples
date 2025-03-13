@@ -1,5 +1,6 @@
 HOSTED_AGENTS_PATH="1-uagents"
-CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility" "communication")
+CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility")
+EXCLUDE=("utility/website-validation-agent")
 
 cd $HOSTED_AGENTS_PATH
 
@@ -7,14 +8,21 @@ for category in ${CATEGORIES[@]}; do
     for agent in $category/*; do
         cd $agent
 
+        # Skip excluded agents
+        if [[ " ${EXCLUDE[@]} " =~ " ${agent} " ]]; then
+            echo "Skipping agent $agent..."
+            cd ../..
+            continue
+        fi
+
         echo "Deploying agent $agent..."
 
         while IFS='=' read -r key value; do
             if cat *.py | grep -q $key; then
                 echo "Adding secret $key to agent $agent..."
-                echo "$key=$value" # >> .secrets
+                echo "$key=$value" >> .secrets
             fi
-        done < <(printenv | grep API_KEY)
+        done < <(printenv | grep _KEY)
 
         # Create a .avctl folder for new agents if it doesn't exist
         avctl hosting init
