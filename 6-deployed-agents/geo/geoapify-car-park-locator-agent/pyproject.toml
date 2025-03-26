@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "geoapify-car-park"
+version = "0.1.0"
+description = "Geoapify Car Park Locator Agent"
+authors = ["Kshipra Dhame <kshipra.dhame@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10,<3.13"
+uagents = "^0.15.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

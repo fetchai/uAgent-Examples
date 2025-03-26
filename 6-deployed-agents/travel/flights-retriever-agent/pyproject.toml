@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "flights-agent"
+version = "0.1.0"
+description = ""
+authors = ["Xavier Peiró <xavier.peiro@fetch.ai>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.13"
+uagents = "~0.15.2"
+tenacity = "~8.2.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
