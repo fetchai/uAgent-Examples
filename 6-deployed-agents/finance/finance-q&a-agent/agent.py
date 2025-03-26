@@ -2,6 +2,7 @@ import os
 from enum import Enum
 
 from ai import get_completion
+from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
@@ -50,6 +51,7 @@ async def finance_qa_query(ctx: Context, sender: str, msg: FinanceQA):
 
 
 agent.include(proto, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code

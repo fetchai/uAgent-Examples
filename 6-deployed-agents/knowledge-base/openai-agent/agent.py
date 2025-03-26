@@ -1,7 +1,10 @@
+import json
 import os
 from enum import Enum
+from typing import Any
 
 from ai import get_completion
+from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
@@ -19,6 +22,15 @@ class Response(Model):
     text: str
 
 
+class StructuredOutputPrompt(Model):
+    prompt: str
+    output_schema: dict[str, Any]
+
+
+class StructuredOutputResponse(Model):
+    output: dict[str, Any]
+
+
 PORT = 8000
 agent = Agent(
     name=AGENT_NAME,
@@ -34,6 +46,13 @@ proto = QuotaProtocol(
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
 
+struct_proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="LLM-Structured-Response",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
+
 
 @proto.on_message(ContextPrompt, replies={Response, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: ContextPrompt):
@@ -41,7 +60,21 @@ async def handle_request(ctx: Context, sender: str, msg: ContextPrompt):
     await ctx.send(sender, Response(text=response))
 
 
+@struct_proto.on_message(
+    StructuredOutputPrompt, replies={StructuredOutputResponse, ErrorMessage}
+)
+async def handle_structured_request(
+    ctx: Context, sender: str, msg: StructuredOutputPrompt
+):
+    response = get_completion(
+        context="", prompt=msg.prompt, response_schema=msg.output_schema
+    )
+    await ctx.send(sender, StructuredOutputResponse(output=json.loads(response)))
+
+
 agent.include(proto, publish_manifest=True)
+agent.include(struct_proto, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code
