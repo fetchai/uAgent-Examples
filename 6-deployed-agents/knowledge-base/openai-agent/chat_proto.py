@@ -131,18 +131,29 @@ struct_output_client_proto = Protocol(
 
 @chat_proto.on_message(ChatMessage)
 async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    ctx.logger.info(f"Got a message from {sender}: {msg.content[0].text}")
-    ctx.storage.set(str(ctx.session), sender)
     await ctx.send(
         sender,
-        ChatAcknowledgement(timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id),
+        ChatAcknowledgement(
+            timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id
+        ),
     )
+    for item in msg.content:
+        if isinstance(item, StartSessionContent):
+            ctx.logger.info(f"Got a start session message from {sender}")
+            continue
+        elif isinstance(item, TextContent):
+            ctx.logger.info(f"Got a message from {sender}: {item.text}")
+            ctx.storage.set(str(ctx.session), sender)
 
-    completion = get_completion(context="", prompt=msg.content[0].text)
+            completion = get_completion(context="", prompt=msg.content[0].text)
 
-    await ctx.send(sender, create_text_chat(completion))
+            await ctx.send(sender, create_text_chat(completion))
+        else:
+            ctx.logger.info(f"Got unexpected content from {sender}")
 
 
 @chat_proto.on_message(ChatAcknowledgement)
 async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
-    ctx.logger.info(f"Got an acknowledgement from {sender} for {msg.acknowledged_msg_id}")
+    ctx.logger.info(
+        f"Got an acknowledgement from {sender} for {msg.acknowledged_msg_id}"
+    )

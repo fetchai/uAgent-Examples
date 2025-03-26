@@ -122,28 +122,54 @@ def create_text_chat(text: str) -> ChatMessage:
     )
 
 
+def create_end_session_chat() -> ChatMessage:
+    return ChatMessage(
+        timestamp=datetime.utcnow(),
+        msg_id=uuid4(),
+        content=[EndSessionContent(type="end-session")],
+    )
+
+
 chat_proto = Protocol(name="AgentChatProtcol", version="0.2.1")
 
 
 @chat_proto.on_message(ChatMessage)
 async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    ctx.logger.info(f"Got a message from {sender}: {msg.content[0].text}")
-    ctx.storage.set(str(ctx.session), sender)
     await ctx.send(
         sender,
-        ChatAcknowledgement(timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id),
+        ChatAcknowledgement(
+            timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id
+        ),
     )
-    try:
-        response = get_completion(prompt=msg.content[0].text)
-        result = response.strip()
-    except Exception as exc:
-        ctx.logger.warning(exc)
-        await ctx.send(sender, create_text_chat(str(exc)))
-        return
+    for item in msg.content:
+        if isinstance(item, StartSessionContent):
+            ctx.logger.info(f"Got a start session message from {sender}")
+            continue
+        elif isinstance(item, TextContent):
+            ctx.logger.info(f"Got a message from {sender}: {item.text}")
+            ctx.storage.set(str(ctx.session), sender)
+            await ctx.send(
+                sender,
+                ChatAcknowledgement(
+                    timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id
+                ),
+            )
+            try:
+                response = get_completion(prompt=item.text)
+                result = response.strip()
+            except Exception as exc:
+                ctx.logger.warning(exc)
+                await ctx.send(sender, create_text_chat(str(exc)))
+                return
 
-    await ctx.send(sender, create_text_chat(result))
+            await ctx.send(sender, create_text_chat(result))
+            await ctx.send(sender, create_end_session_chat())
+        else:
+            ctx.logger.info(f"Got unexpected content from {sender}")
 
 
 @chat_proto.on_message(ChatAcknowledgement)
 async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
-    ctx.logger.info(f"Got an acknowledgement from {sender} for {msg.acknowledged_msg_id}")
+    ctx.logger.info(
+        f"Got an acknowledgement from {sender} for {msg.acknowledged_msg_id}"
+    )
