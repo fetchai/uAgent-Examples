@@ -8,10 +8,6 @@ class Message(Model):
 # First generate a secure seed phrase (e.g. https://pypi.org/project/mnemonic/)
 SEED_PHRASE = "put_your_seed_phrase_here"
 
-# Copy the address shown below
-print(f"Your agent's address is: {agent.address}")
-
-
 # Now your agent is ready to join the agentverse!
 agent = Agent(
     name="alice",
@@ -19,6 +15,8 @@ agent = Agent(
     mailbox=True
 )
 
+# Copy the address shown below
+print(f"Your agent's address is: {agent.address}")
 
 @agent.on_message(model=Message, replies={Message})
 async def handle_message(ctx: Context, sender: str, msg: Message):
