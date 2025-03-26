@@ -1,4 +1,4 @@
-HOSTED_AGENTS_PATH="1-uagents"
+HOSTED_AGENTS_PATH="6-deployed-agents"
 CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility")
 EXCLUDE=("utility/website-validation-agent")
 
