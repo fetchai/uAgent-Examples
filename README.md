@@ -13,6 +13,7 @@ Source codes are categorised per the following folder structure:
 - 🔗 `2-solutions`: Collections of uAgents that together achieve an objective
 - 🖥️ `3-applications`: Applications that involve uAgents
 - 👤 `4-community`: uAgents submitted by the community
+- 👤 `5-documentation`: supporting projects for fetch.ai/docs
 
 ## ✨ Contributing
 
