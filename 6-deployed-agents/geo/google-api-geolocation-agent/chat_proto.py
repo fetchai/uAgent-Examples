@@ -126,6 +126,7 @@ def create_text_chat(text: str) -> ChatMessage:
         content=[TextContent(type="text", text=text)],
     )
 
+
 def create_end_session_chat() -> ChatMessage:
     return ChatMessage(
         timestamp=datetime.utcnow(),
@@ -152,24 +153,34 @@ class StructuredOutputResponse(Model):
 
 @chat_proto.on_message(ChatMessage)
 async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
-    ctx.logger.info(f"Got a message from {sender}: {msg.content[0].text}")
-    ctx.storage.set(str(ctx.session), sender)
     await ctx.send(
         sender,
-        ChatAcknowledgement(timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id),
-    )
-
-    await ctx.send(
-        AI_AGENT_ADDRESS,
-        StructuredOutputPrompt(
-            prompt=msg.content[0].text, output_schema=GeolocationRequest.schema()
+        ChatAcknowledgement(
+            timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id
         ),
     )
+    for item in msg.content:
+        if isinstance(item, StartSessionContent):
+            ctx.logger.info(f"Got a start session message from {sender}")
+            continue
+        elif isinstance(item, TextContent):
+            ctx.logger.info(f"Got a message from {sender}: {item.text}")
+            ctx.storage.set(str(ctx.session), sender)
+            await ctx.send(
+                AI_AGENT_ADDRESS,
+                StructuredOutputPrompt(
+                    prompt=item.text, output_schema=GeolocationRequest.schema()
+                ),
+            )
+        else:
+            ctx.logger.info(f"Got unexpected content from {sender}")
 
 
 @chat_proto.on_message(ChatAcknowledgement)
 async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
-    ctx.logger.info(f"Got an acknowledgement from {sender} for {msg.acknowledged_msg_id}")
+    ctx.logger.info(
+        f"Got an acknowledgement from {sender} for {msg.acknowledged_msg_id}"
+    )
 
 
 @struct_output_client_proto.on_message(StructuredOutputResponse)
@@ -178,6 +189,11 @@ async def handle_structured_output_response(
 ):
     prompt = GeolocationRequest.parse_obj(msg.output)
     session_sender = ctx.storage.get(str(ctx.session))
+    if session_sender is None:
+        ctx.logger.error(
+            "Discarding message because no session sender found in storage"
+        )
+        return
 
     try:
         coordinates = await find_coordinates(prompt.address)
