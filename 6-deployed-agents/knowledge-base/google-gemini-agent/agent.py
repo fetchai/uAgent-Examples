@@ -1,7 +1,10 @@
+import json
 import os
 from enum import Enum
+from typing import Any
 
 from ai import get_completion
+from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
@@ -22,8 +25,17 @@ class TextResponse(Model):
     text: str
 
 
-class Response(Model):
+class CodeResponse(Model):
     text: str
+
+
+class StructuredOutputPrompt(Model):
+    prompt: str
+    output_schema: dict[str, Any]
+
+
+class StructuredOutputResponse(Model):
+    output: dict[str, Any]
 
 
 PORT = 8000
@@ -40,6 +52,7 @@ text_proto = QuotaProtocol(
     version="0.1.0",
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
+
 code_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Code-Generator",
@@ -47,8 +60,15 @@ code_proto = QuotaProtocol(
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
 
+struct_proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="LLM-Structured-Response",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
 
-@text_proto.on_message(TextPrompt, replies={Response, ErrorMessage})
+
+@text_proto.on_message(TextPrompt, replies={TextResponse, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
     response = get_completion(msg.text, False)
     if response is None:
@@ -58,10 +78,10 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-    await ctx.send(sender, Response(text=response))
+    await ctx.send(sender, TextResponse(text=response))
 
 
-@code_proto.on_message(CodePrompt, replies={Response, ErrorMessage})
+@code_proto.on_message(CodePrompt, replies={CodeResponse, ErrorMessage})
 async def handle_codegen_request(ctx: Context, sender: str, msg: CodePrompt):
     response = get_completion(msg.text, True)
     if response is None:
@@ -71,11 +91,30 @@ async def handle_codegen_request(ctx: Context, sender: str, msg: CodePrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-    await ctx.send(sender, Response(text=response))
+    await ctx.send(sender, CodeResponse(text=response))
+
+
+@struct_proto.on_message(
+    StructuredOutputPrompt, replies={StructuredOutputResponse, ErrorMessage}
+)
+async def handle_structured_request(
+    ctx: Context, sender: str, msg: StructuredOutputPrompt
+):
+    response = get_completion(msg.prompt, False, msg.output_schema)
+    if response is None:
+        await ctx.send(
+            sender,
+            ErrorMessage(
+                error="An error occurred while processing the request. Please try again later."
+            ),
+        )
+    await ctx.send(sender, StructuredOutputResponse(output=json.loads(response)))
 
 
 agent.include(text_proto, publish_manifest=True)
 agent.include(code_proto, publish_manifest=True)
+agent.include(struct_proto, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code

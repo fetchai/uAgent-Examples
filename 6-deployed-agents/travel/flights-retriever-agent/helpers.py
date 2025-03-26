@@ -45,12 +45,10 @@ def _request_get(url: str, query: dict, logger: logging.Logger) -> Response:
 
     if response.status_code != HTTPStatus.OK:
         logger.error(
-            f"""
-            Some problem at requesting to RapidAPI, we were not able to fetch any data.
-            url: {response.request.url}
-            response code: {response.status_code}
-            response: {response.text}
-            """
+            f"Some problem at requesting to RapidAPI, we were not able to fetch any data.\n"
+            f"url: {response.request.url}\n"
+            f"response code: {response.status_code}\n"
+            f"response: {response.text}"
         )
 
     return response

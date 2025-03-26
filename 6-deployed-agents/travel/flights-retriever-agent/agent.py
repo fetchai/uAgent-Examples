@@ -26,6 +26,8 @@ from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
+from chat_proto import chat_proto, struct_output_client_proto
+
 FLIGHTS_SEED = os.getenv("FLIGHTS_SEED", "flights adaptor really secret phrase :)))")
 AGENT_NAME = os.getenv("AGENT_NAME", "Flights Retriever Agent")
 
@@ -99,6 +101,8 @@ async def direct_flight_offers(ctx: Context, sender: str, msg: FlightsSearchRequ
 
 
 agent.include(proto, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
+agent.include(struct_output_client_proto, publish_manifest=True)
 
 
 ### Health check related code

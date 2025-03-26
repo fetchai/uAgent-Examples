@@ -1,5 +1,7 @@
 import json
 import os
+from typing import Any
+from openai import OpenAI, OpenAIError
 
 import requests
 
@@ -19,27 +21,39 @@ if OPENAI_API_KEY is None or OPENAI_API_KEY == "YOUR_OPENAI_API_KEY":
     )
 
 
+client = OpenAI(api_key=OPENAI_API_KEY)
+
+
 # Send a prompt and context to the AI model and return the content of the completion
-def get_completion(context: str, prompt: str, max_tokens: int = MAX_TOKENS) -> str:
-    data = {
-        "model": MODEL_ENGINE,
-        "messages": [
-            {"role": "system", "content": context},
-            {"role": "user", "content": prompt},
-        ],
-        "max_tokens": max_tokens,
-    }
+def get_completion(
+    context: str,
+    prompt: str,
+    response_schema: dict[str, Any] | None = None,
+    max_tokens: int = MAX_TOKENS,
+) -> str:
+    if response_schema is not None:
+        response_format = {
+            "type": "json_schema",
+            "json_schema": {
+                "name": response_schema["title"],
+                "strict": False,
+                "schema": response_schema,
+            },
+        }
+    else:
+        response_format = None
 
     try:
-        response = requests.post(
-            OPENAI_URL, headers=HEADERS, data=json.dumps(data), timeout=120
+        response = client.chat.completions.create(
+            model=MODEL_ENGINE,
+            messages=[
+                {"role": "system", "content": context},
+                {"role": "user", "content": prompt},
+            ],
+            response_format=response_format,
+            max_tokens=max_tokens,
         )
-    except requests.exceptions.Timeout:
-        return "The request timed out. Please try again."
-    except requests.exceptions.RequestException as e:
+    except OpenAIError as e:
         return f"An error occurred: {e}"
 
-    messages = response.json()["choices"]
-    message = messages[0]["message"]["content"]
-
-    return message
+    return response.choices[0].message.content

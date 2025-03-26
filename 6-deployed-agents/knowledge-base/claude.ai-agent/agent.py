@@ -1,7 +1,10 @@
 import os
 from enum import Enum
+from typing import Any
 
-from ai import get_completion
+from ai import get_completion, get_structured_response
+from chat_proto import chat_proto
+
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
@@ -18,6 +21,15 @@ class TextResponse(Model):
     text: str
 
 
+class StructuredOutputPrompt(Model):
+    prompt: str
+    output_schema: dict[str, Any]
+
+
+class StructuredOutputResponse(Model):
+    output: dict[str, Any]
+
+
 PORT = 8000
 agent = Agent(
     name=AGENT_NAME,
@@ -29,6 +41,13 @@ agent = Agent(
 proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Text-Response",
+    version="0.1.0",
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+)
+
+struct_proto = QuotaProtocol(
+    storage_reference=agent.storage,
+    name="LLM-Structured-Response",
     version="0.1.0",
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
@@ -47,7 +66,26 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
     await ctx.send(sender, TextResponse(text=response))
 
 
+@struct_proto.on_message(
+    StructuredOutputPrompt, replies={StructuredOutputResponse, ErrorMessage}
+)
+async def handle_structured_request(
+    ctx: Context, sender: str, msg: StructuredOutputPrompt
+):
+    response = get_structured_response(msg.prompt, msg.output_schema)
+    if response is None:
+        await ctx.send(
+            sender,
+            ErrorMessage(
+                error="An error occurred while processing the request. Please try again later."
+            ),
+        )
+    await ctx.send(sender, StructuredOutputResponse(output=response))
+
+
 agent.include(proto, publish_manifest=True)
+agent.include(struct_proto, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code

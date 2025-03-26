@@ -63,8 +63,8 @@ jobs:
       - name: Check for newly deployed agents
         id: check-new-agents
         run: |
-          git add 1-uagents/**.avctl**
-          if git diff --cached --quiet 1-uagents/**.avctl**; then
+          git add 6-deployed-agents/**.avctl**
+          if git diff --cached --quiet 6-deployed-agents/**.avctl**; then
             echo "new=false" >> "$GITHUB_OUTPUT"
           else
             echo "new=true" >> "$GITHUB_OUTPUT"
@@ -79,5 +79,5 @@ jobs:
           body: "This PR adds AVCTL deployment configuration files for new agents."
           base: "main"
           branch: "chore/deploy-production-agents-${{ github.run_number }}"
-          add-paths: "1-uagents/**.avctl**"
+          add-paths: "6-deployed-agents/**.avctl**"
         if: steps.check-new-agents.outputs.new == 'true'

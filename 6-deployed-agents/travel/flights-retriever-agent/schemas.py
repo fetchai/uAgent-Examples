@@ -12,7 +12,9 @@ class FlightsSearchRequest(Model):
         description="This field is the airport IATA code of the destination airport! This should be airport IATA code. IATA airport code is a three-character alphanumeric geocode."
     )
     date: datetime = Field(description="Contains the date of flying out.")
-    persons: int = Field(description="Describes how many persons are going to fly.")
+    persons: int = Field(
+        default=1,
+        description="Describes how many persons are going to fly.")
     currency: str = Field(
         default="USD",
         description="Currency, ISO 4217, in which you want to get information back (e.g.: EUR, GBP, USD, CHF...).",

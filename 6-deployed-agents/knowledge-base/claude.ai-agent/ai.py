@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Any
 
 import requests
 
@@ -23,13 +24,32 @@ HEADERS = {
 # "claude-3-haiku-20240307",  # Fast & cost-effective
 
 
+def create_structured_response_tool(
+    response_model_schema: dict[str, Any]
+) -> dict[str, Any]:
+
+    # Exclude the title from the schema (not allowed in the API)
+    for data in response_model_schema["properties"].values():
+        if "title" in data:
+            data.pop("title")
+
+    return {
+        "name": response_model_schema["title"],
+        "description": response_model_schema.get("description", ""),
+        "input_schema": response_model_schema,
+    }
+
+
 # Send a prompt to the AI model and return the content of the completion
-def get_completion(prompt: str) -> str | None:
+def get_completion(prompt: str, tool: dict[str, Any] | None = None) -> str | None:
     data = {
         "model": MODEL_ENGINE,
         "max_tokens": MAX_TOKENS,
         "messages": [{"role": "user", "content": prompt}],
     }
+    if tool:
+        data["tools"] = [tool]
+        data["tool_choice"] = {"type": "tool", "name": tool["name"]}
 
     try:
         response = requests.post(
@@ -40,7 +60,18 @@ def get_completion(prompt: str) -> str | None:
     except requests.exceptions.RequestException as e:
         return f"An error occurred: {e}"
 
+    if tool:
+        for item in response.json()["content"]:
+            if item["type"] == "tool_use":
+                return item["input"]
+
     messages = response.json()["content"]
     message = messages[0]["text"]
-
     return message
+
+
+def get_structured_response(
+    prompt: str, response_model_schema: dict[str, Any]
+) -> dict[str, Any] | None:
+    tool = create_structured_response_tool(response_model_schema)
+    return get_completion(prompt, tool)
