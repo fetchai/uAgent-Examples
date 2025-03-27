@@ -1,15 +1,16 @@
 import os
 from enum import Enum
 
-from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
-from finbert import FinancialSentimentResponse, FinancialSentimentRequest, get_finbert_sentiment
+from chat_proto import chat_proto, struct_output_client_proto
+from weather import get_weather, WeatherForecastRequest, WeatherForecastResponse
 
-AGENT_SEED = os.getenv("AGENT_SEED", "<finbert-sentiment-agent>")
-AGENT_NAME = os.getenv("AGENT_NAME", "Finbert Financial Sentiment Agent")
+AGENT_SEED = os.getenv("AGENT_SEED", "weather-agent")
+AGENT_NAME = os.getenv("AGENT_NAME", "Weather Agent")
+
 
 PORT = 8000
 agent = Agent(
@@ -19,37 +20,31 @@ agent = Agent(
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-
 proto = QuotaProtocol(
     storage_reference=agent.storage,
-    name="Financial-Sentiment",
+    name="Weather-Agent-Protocol",
     version="0.1.0",
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
 
-
 @proto.on_message(
-    FinancialSentimentRequest, replies={FinancialSentimentResponse, ErrorMessage}
+    WeatherForecastRequest, replies={WeatherForecastResponse, ErrorMessage}
 )
-async def handle_request(ctx: Context, sender: str, msg: FinancialSentimentRequest):
-    ctx.logger.info(f"Got request to get finbert sentiment from {sender}")
+async def handle_request(ctx: Context, sender: str, msg: WeatherForecastRequest):
+    ctx.logger.info(f"Received Address: {msg.location}")
     try:
-        sentiment = await get_finbert_sentiment(msg.text)
+        weather_forecast = await get_weather(msg.location)
     except Exception as err:
         ctx.logger.error(err)
-        await ctx.send(
-            sender,
-            ErrorMessage(
-                error="An error occurred while processing the request. Please try again later."
-            ),
-        )
-        return
+        await ctx.send(sender, ErrorMessage(error=str(err)))
 
-    await ctx.send(sender, sentiment)
+    if "error" in weather_forecast:
+        await ctx.send(sender, ErrorMessage(error=weather_forecast["error"]))
+        return
+    await ctx.send(sender, WeatherForecastResponse(**weather_forecast))
 
 
 agent.include(proto, publish_manifest=True)
-agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code
@@ -96,6 +91,9 @@ async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
 
 
 agent.include(health_protocol, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
+agent.include(struct_output_client_proto, publish_manifest=True)
+
 
 if __name__ == "__main__":
     agent.run()

@@ -1,28 +1,16 @@
 import os
 import time
 from enum import Enum
-from typing import Dict
 
-import requests
+from chat_proto import chat_proto, struct_output_client_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents.models import ErrorMessage
 
+from functions import CompanyOverviewResponse, CompanyOverviewRequest, fetch_overview_json
+
 AGENT_SEED = os.getenv("AGENT_SEED", "company-overview")
 AGENT_NAME = os.getenv("AGENT_NAME", "Company Overview Agent")
-
-ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
-
-if ALPHAVANTAGE_API_KEY is None:
-    raise ValueError("You need to provide an API key for Alpha Vantage.")
-
-
-class CompanyOverviewRequest(Model):
-    ticker: str
-
-
-class CompanyOverviewResponse(Model):
-    overview: Dict[str, str]
 
 
 PORT = 8000
@@ -39,24 +27,6 @@ proto = QuotaProtocol(
     version="0.1.0",
     default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
 )
-
-
-def fetch_overview_json(ticker: str) -> dict:
-    url = f"https://www.alphavantage.co/query?function=OVERVIEW&symbol={ticker}&apikey={ALPHAVANTAGE_API_KEY}"
-
-    try:
-        response = requests.get(url, timeout=10)
-    except requests.exceptions.Timeout:
-        return {"error": "The request timed out. Please try again."}
-    except requests.exceptions.RequestException as e:
-        return {"error": f"An error occurred: {e}"}
-
-    data = response.json()
-
-    if not data or "Symbol" not in data:
-        return {"error": "No valid data found in the response."}
-
-    return data
 
 
 @proto.on_message(
@@ -91,6 +61,8 @@ async def handle_request(ctx: Context, sender: str, msg: CompanyOverviewRequest)
 
 
 agent.include(proto, publish_manifest=True)
+agent.include(chat_proto, publish_manifest=True)
+agent.include(struct_output_client_proto, publish_manifest=True)
 
 
 # Health check related code
