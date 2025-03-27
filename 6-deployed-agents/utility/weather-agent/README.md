@@ -18,7 +18,7 @@ WeatherForecastRequest(
 
 ```python
 WeatherForecastResponse(
-    location="19.3°C",
+    location="London",
     temp=" 19.3°C",
     condition="Partly cloudy",
     humidity="46%",
@@ -35,7 +35,9 @@ from uagents import Agent, Context, Model
 
 
 class WeatherForecastRequest(Model):
-    location: str
+    location: str = Field(
+        description="Location", 
+    )
 
 
 class WeatherForecastResponse(Model):

@@ -85,7 +85,9 @@ from uagents import Agent, Context, Model
 
 
 class CompanyOverviewRequest(Model):
-    ticker: str
+    ticker: str = Field(
+        description="The stock ticker symbol (e.g., AAPL for Apple Inc.) used to identify the company on financial markets.", 
+    )
 
 
 class CompanyOverviewResponse(Model):
@@ -109,7 +111,7 @@ async def send_message(ctx: Context):
 @agent.on_message(CompanyOverviewResponse)
 async def handle_response(ctx: Context, sender: str, msg: CompanyOverviewResponse):
     ctx.logger.info(f"Received response from {sender}:")
-    ctx.logger.info(msg.overview)
+    ctx.logger.info(str(msg.overview))
 
 
 if __name__ == "__main__":
