@@ -5,7 +5,7 @@ from typing import List
 import requests
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 
 AGENT_SEED = os.getenv("AGENT_SEED", "tech-sentiment-agent-alphavantage123")
 AGENT_NAME = os.getenv("AGENT_NAME", "Financial News Sentiment Agent")

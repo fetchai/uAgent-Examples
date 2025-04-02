@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 
 AGENT_SEED = os.getenv("AGENT_SEED", "website-scraper-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Website Scraper Agent")

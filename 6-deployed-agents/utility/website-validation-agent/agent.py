@@ -9,7 +9,7 @@ from grammar_check_agent_helper import (
 )
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 from website_utils import find_broken_links
 
 AGENT_NAME = os.getenv("AGENT_NAME", "Website Validation Agent")

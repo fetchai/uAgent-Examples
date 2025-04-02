@@ -6,12 +6,12 @@ from typing import Any
 from ai import get_completion
 from chat_proto import chat_proto
 from uagents import Agent, Context, Model
-from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents.experimental.quota import QuotaProtocol, RateLimit, AccessControlList
+from uagents_core.models import ErrorMessage
 
 AGENT_SEED = os.getenv("AGENT_SEED", "openai-test-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "OpenAI Agent")
-
+BYPASS_RATE_LIMIT = set([item for item in os.getenv("BYPASS_RATE_LIMIT", "").split(",") if item])
 
 class ContextPrompt(Model):
     context: str
@@ -39,18 +39,23 @@ agent = Agent(
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
+acl = AccessControlList(
+    default=False,
+    bypass_rate_limit=BYPASS_RATE_LIMIT,
+)
+
 proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Context-Response",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6, acl=acl),
 )
 
 struct_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Structured-Response",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6, acl=acl),
 )
 
 

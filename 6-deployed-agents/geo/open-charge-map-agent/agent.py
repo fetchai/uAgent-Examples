@@ -5,7 +5,7 @@ from api_adapter import OCMAPI, Unit
 from models import POI, Coordinates, POIAreaRequest, POIResponse
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 
 AGENT_SEED = os.getenv("AGENT_SEED", "super secret seed for the open charge map agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Open Charge Map Agent")

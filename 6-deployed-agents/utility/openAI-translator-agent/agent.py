@@ -4,7 +4,7 @@ from enum import Enum
 from ai import get_completion
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage, Field
+from uagents_core.models import ErrorMessage, Field
 
 AGENT_SEED = os.getenv("AGENT_SEED", "openai-translator-test-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "OpenAI Translator Agent")

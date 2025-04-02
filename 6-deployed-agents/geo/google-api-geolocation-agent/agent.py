@@ -3,7 +3,7 @@ from enum import Enum
 
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 
 from chat_proto import chat_proto, struct_output_client_proto
 from coordinates import find_coordinates, GeolocationResponse, GeolocationRequest
