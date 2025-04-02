@@ -39,7 +39,7 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
             ctx.logger.info(f"Got a message from {sender}: {item.text}")
             ctx.storage.set(str(ctx.session), sender)
 
-            completion = get_completion(prompt=msg.content[0].text)
+            completion = get_completion(prompt=item.text)
 
             await ctx.send(sender, create_text_chat(completion))
         else:
