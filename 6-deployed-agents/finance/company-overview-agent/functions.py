@@ -35,5 +35,3 @@ def fetch_overview_json(ticker: str) -> dict:
         return {"error": "No valid data found in the response."}
 
     return data
-
-print(fetch_overview_json("AMZN"))
