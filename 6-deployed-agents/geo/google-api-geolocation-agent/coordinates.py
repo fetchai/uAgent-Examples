@@ -1,8 +1,7 @@
 import os
 import requests
 
-from uagents import Model
-from uagents.models import Field
+from uagents import Model, Field
 
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 

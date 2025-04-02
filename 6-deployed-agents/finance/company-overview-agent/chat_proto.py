@@ -1,8 +1,7 @@
-import os
 from datetime import datetime
-from uuid import uuid4
+import os
+import time
 from typing import Any
-
 from uagents import Context, Model, Protocol
 from uagents_core.contrib.protocols.chat import (
     ChatAcknowledgement,
@@ -13,7 +12,9 @@ from uagents_core.contrib.protocols.chat import (
     chat_protocol_spec,
 )
 
-from coordinates import find_coordinates, GeolocationRequest
+from uuid import uuid4
+
+from functions import CompanyOverviewRequest, fetch_overview_json
 
 
 AI_AGENT_ADDRESS = os.getenv("AI_AGENT_ADDRESS")
@@ -31,7 +32,6 @@ def create_text_chat(text: str, end_session: bool = True) -> ChatMessage:
 
 
 chat_proto = Protocol(spec=chat_protocol_spec)
-
 
 struct_output_client_proto = Protocol(
     name="StructuredOutputClientProtocol", version="0.1.0"
@@ -65,7 +65,7 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
             await ctx.send(
                 AI_AGENT_ADDRESS,
                 StructuredOutputPrompt(
-                    prompt=item.text, output_schema=GeolocationRequest.schema()
+                    prompt=item.text, output_schema=CompanyOverviewRequest.schema()
                 ),
             )
         else:
@@ -83,7 +83,7 @@ async def handle_ack(ctx: Context, sender: str, msg: ChatAcknowledgement):
 async def handle_structured_output_response(
     ctx: Context, sender: str, msg: StructuredOutputResponse
 ):
-    prompt = GeolocationRequest.parse_obj(msg.output)
+    prompt = CompanyOverviewRequest.parse_obj(msg.output)
     session_sender = ctx.storage.get(str(ctx.session))
     if session_sender is None:
         ctx.logger.error(
@@ -91,8 +91,24 @@ async def handle_structured_output_response(
         )
         return
 
+    cache = ctx.storage.get(prompt.ticker) or None
+    if cache:
+        if int(time.time()) - cache["timestamp"] < 86400:
+            cache.pop("timestamp")
+            chat_message = create_text_chat(
+                f"Company: {cache['Name']} ({cache['Symbol']})\n"
+                f"Exchange: {cache['Exchange']} | Currency: {cache['Currency']}\n"
+                f"Industry: {cache['Industry']} | Sector: {cache['Sector']}\n"
+                f"Market Cap: {cache['Currency']} {cache['MarketCapitalization']}\n"
+                f"PE Ratio: {cache['PERatio']} | EPS: {cache['EPS']}\n"
+                f"Website: {cache['OfficialSite']}\n\n"
+                f"Description: {cache['Description']}"
+            )
+            await ctx.send(session_sender, chat_message)
+            return
+
     try:
-        coordinates = await find_coordinates(prompt.address)
+        output_json = fetch_overview_json(prompt.ticker)
     except Exception as err:
         ctx.logger.error(err)
         await ctx.send(
@@ -103,12 +119,20 @@ async def handle_structured_output_response(
         )
         return
 
-    if "error" in coordinates:
-        await ctx.send(session_sender, create_text_chat(str(coordinates["error"])))
+    if "error" in output_json:
+        await ctx.send(session_sender, create_text_chat(str(output_json["error"])))
         return
 
     chat_message = create_text_chat(
-        f"Latitude: {coordinates['latitude']}\n"
-        f"Longitude: {coordinates['longitude']}\n"
+        f"Company: {output_json['Name']} ({output_json['Symbol']})\n"
+        f"Exchange: {output_json['Exchange']} | Currency: {output_json['Currency']}\n"
+        f"Industry: {output_json['Industry']} | Sector: {output_json['Sector']}\n"
+        f"Market Cap: {output_json['Currency']} {output_json['MarketCapitalization']}\n"
+        f"PE Ratio: {output_json['PERatio']} | EPS: {output_json['EPS']}\n"
+        f"Website: {output_json['OfficialSite']}\n\n"
+        f"Description: {output_json['Description']}"
     )
+
+    output_json["timestamp"] = int(time.time())
+    ctx.storage.set(prompt.ticker, output_json)
     await ctx.send(session_sender, chat_message)

@@ -8,7 +8,7 @@ packages = [{ include = "claude" }]
 
 [tool.poetry.dependencies]
 python = "^3.10,<3.13"
-uagents = "^0.15.2"
+uagents = "^0.22.0"
 requests = "^2.32.3"
 
 

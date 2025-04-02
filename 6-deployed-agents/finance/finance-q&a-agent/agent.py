@@ -5,7 +5,7 @@ from ai import get_completion
 from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 
 AGENT_SEED = os.getenv("AGENT_SEED", "finance_qa_agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Finance Q&A Agent")

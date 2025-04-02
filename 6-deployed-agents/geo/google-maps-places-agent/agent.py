@@ -13,7 +13,7 @@ from communication import POIAreaRequest, POIResponse
 from logic import find_pois
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit
-from uagents.models import ErrorMessage
+from uagents_core.models import ErrorMessage
 
 AGENT_NAME = os.getenv("AGENT_NAME", "Google Maps Places Agent")
 

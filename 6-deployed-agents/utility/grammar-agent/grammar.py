@@ -1,6 +1,6 @@
 import os
-import requests
 
+import requests
 
 SAPLING_API_KEY = os.getenv("SAPLING_API_KEY")
 
