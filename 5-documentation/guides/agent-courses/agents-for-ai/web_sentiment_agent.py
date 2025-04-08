@@ -12,13 +12,12 @@ class SummaryRequest(Model):
 
 
 SEED_PHRASE = "<your_seed_phrase>"
-AGENT_MAILBOX_KEY = "<your_mailbox_key>"
 OPENAI_API_KEY = "<your_open_ai_key>"
 
 summaryAgent = Agent(
     name="SummaryAgent",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 summary_protocol = Protocol("Text Summariser")
