@@ -56,21 +56,24 @@ text_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Text-Response",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6), acl=acl,
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+    default_acl=acl,
 )
 
 code_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Code-Generator",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6), acl=acl,
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+    default_acl=acl,
 )
 
 struct_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Structured-Response",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6), acl=acl,
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
+    default_acl=acl,
 )
 
 
