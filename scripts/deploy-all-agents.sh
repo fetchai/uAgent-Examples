@@ -32,9 +32,9 @@ for category in ${CATEGORIES[@]}; do
 
         # Deploy the agent with secrets if they exist
         if [ -s .secrets ]; then
-            avctl hosting deploy -n "$agent_name" --network mainnet -s .secrets --no-dependency-check || true
+            avctl hosting deploy -n "$agent_name" -s .secrets --no-dependency-check || true
         else
-            avctl hosting deploy -n "$agent_name" --network mainnet --no-dependency-check || true
+            avctl hosting deploy -n "$agent_name" --no-dependency-check || true
         fi
 
         cd ../..
