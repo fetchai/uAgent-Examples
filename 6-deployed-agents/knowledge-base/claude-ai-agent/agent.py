@@ -2,11 +2,12 @@ import os
 from enum import Enum
 from typing import Any
 
-from ai import get_completion, get_structured_response
-from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import AccessControlList, QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
+
+from ai import get_structured_response, get_text_completion
+from chat_proto import chat_proto
 
 AGENT_SEED = os.getenv("AGENT_SEED", "claude-test-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Claude.ai Agent")
@@ -62,7 +63,7 @@ struct_proto = QuotaProtocol(
 
 @proto.on_message(TextPrompt, replies={TextResponse, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
-    response = get_completion(msg.text)
+    response = get_text_completion(msg.text)
     if response is None:
         await ctx.send(
             sender,

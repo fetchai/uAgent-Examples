@@ -11,7 +11,7 @@ if ANTHROPIC_API_KEY is None or ANTHROPIC_API_KEY == "YOUR_ANTHROPIC_API_KEY":
     raise ValueError(
         "You need to provide an API key: https://platform.openai.com/api-keys"
     )
-MODEL_ENGINE = os.getenv("MODEL_ENGINE", "claude-3-haiku-20240307")
+MODEL_ENGINE = os.getenv("MODEL_ENGINE", "claude-3-5-haiku-latest")
 HEADERS = {
     "x-api-key": ANTHROPIC_API_KEY,
     "anthropic-version": "2023-06-01",
@@ -25,7 +25,7 @@ HEADERS = {
 
 
 def create_structured_response_tool(
-    response_model_schema: dict[str, Any]
+    response_model_schema: dict[str, Any],
 ) -> dict[str, Any]:
 
     # Exclude the title from the schema (not allowed in the API)
@@ -40,13 +40,26 @@ def create_structured_response_tool(
     }
 
 
+def get_text_completion(prompt: str, tool: dict[str, Any] | None = None) -> str | None:
+    content = [{"type": "text", "text": prompt}]
+    return get_completion(content, tool)
+
+
 # Send a prompt to the AI model and return the content of the completion
-def get_completion(prompt: str, tool: dict[str, Any] | None = None) -> str | None:
+def get_completion(
+    content: list[dict[str, Any]], tool: dict[str, Any] | None = None
+) -> str | None:
     data = {
         "model": MODEL_ENGINE,
         "max_tokens": MAX_TOKENS,
-        "messages": [{"role": "user", "content": prompt}],
+        "messages": [
+            {
+                "role": "user",
+                "content": content,
+            }
+        ],
     }
+
     if tool:
         data["tools"] = [tool]
         data["tool_choice"] = {"type": "tool", "name": tool["name"]}
@@ -55,23 +68,34 @@ def get_completion(prompt: str, tool: dict[str, Any] | None = None) -> str | Non
         response = requests.post(
             CLAUDE_URL, headers=HEADERS, data=json.dumps(data), timeout=120
         )
+        response.raise_for_status()
     except requests.exceptions.Timeout:
         return "The request timed out. Please try again."
     except requests.exceptions.RequestException as e:
         return f"An error occurred: {e}"
 
+    # Check if the response was successful
+    response_data = response.json()
+
+    # Handle error responses
+    if "error" in response_data:
+        return f"API Error: {response_data['error'].get('message', 'Unknown error')}"
+
     if tool:
-        for item in response.json()["content"]:
+        for item in response_data["content"]:
             if item["type"] == "tool_use":
                 return item["input"]
+            
+    messages = response_data["content"]
 
-    messages = response.json()["content"]
-    message = messages[0]["text"]
-    return message
+    if messages:
+        return messages[0]["text"]
+    else:
+        return None
 
 
 def get_structured_response(
     prompt: str, response_model_schema: dict[str, Any]
 ) -> dict[str, Any] | None:
     tool = create_structured_response_tool(response_model_schema)
-    return get_completion(prompt, tool)
+    return get_text_completion(prompt, tool)
