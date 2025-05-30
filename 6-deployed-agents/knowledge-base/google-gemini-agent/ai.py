@@ -1,5 +1,6 @@
 import os
 from typing import Any
+import base64
 
 from google import genai
 from google.genai import types
@@ -15,12 +16,32 @@ if GEMINI_API_KEY is None or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 
+def get_text_completion(prompt: str, code_generation: bool = False) -> str | None:
+    content = [{"type": "text", "text": prompt}]
+    return get_completion(content, code_generation)
+
+
 # Send a prompt to the AI model and return the content of the completion
 def get_completion(
-    prompt: str,
+    content: list[dict[str, Any]],
     code_generation: bool = False,
     response_schema: dict[str, Any] | None = None,
 ) -> str | None:
+    parts = []
+    config = None
+
+    for item in content:
+        if item.get("type") == "text":
+            parts.append(types.Part(text=item["text"]))
+        elif item.get("type") == "resource":
+            mime_type = item["mime_type"]
+            if mime_type.startswith("image/"):
+                raw_bytes = base64.b64decode(item["contents"])
+                parts.append(types.Part(inline_data=types.Blob(mime_type=mime_type, data=raw_bytes)))
+            else:
+                return f"Unsupported mime type: {mime_type}"
+
+
     if code_generation:
         config = types.GenerateContentConfig(
             tools=[types.Tool(code_execution=types.ToolCodeExecution)]
@@ -30,16 +51,13 @@ def get_completion(
             "response_mime_type": "application/json",
             "response_schema": response_schema,
         }
-    else:
-        config = None
 
     try:
         response = client.models.generate_content(
             model=MODEL_ENGINE,
-            contents=prompt,
+            contents=[types.Content(parts=parts)],
             config=config,
         )
         return response.text
     except Exception as e:
-        print(f"Error: {e}")
-        return None
+        return str(e)

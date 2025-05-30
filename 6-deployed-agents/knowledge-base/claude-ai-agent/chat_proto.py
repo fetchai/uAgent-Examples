@@ -50,7 +50,7 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
             timestamp=datetime.utcnow(), acknowledged_msg_id=msg.msg_id
         ),
     )
-    ctx.storage.set(str(ctx.session), sender)
+
     prompt_content = []
     for item in msg.content:
         if isinstance(item, StartSessionContent):
@@ -64,21 +64,12 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
                     storage_url=STORAGE_URL,
                 )
                 data = external_storage.download(str(item.resource_id))
-                if "image" in data["mime_type"]:
-                    prompt_content.append(
-                        {
-                            "type": "image",
-                            "source": {
-                                "type": "base64",
-                                "media_type": data["mime_type"],
-                                "data": data["contents"],
-                            },
-                        }
-                    )
-                else:
-                    ctx.logger.warning(
-                        f"Got unexpected resource type: {data['mime_type']}"
-                    )
+                prompt_content.append({
+                    "type": "resource",
+                    "mime_type": data["mime_type"],
+                    "contents": data["contents"],
+                })
+
             except Exception as ex:
                 ctx.logger.error(f"Failed to download resource: {ex}")
                 await ctx.send(sender, create_text_chat("Failed to download resource."))
