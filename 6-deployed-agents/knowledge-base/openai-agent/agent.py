@@ -3,7 +3,7 @@ import os
 from enum import Enum
 from typing import Any
 
-from ai import get_completion
+from ai import get_text_completion
 from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit, AccessControlList
@@ -61,7 +61,7 @@ struct_proto = QuotaProtocol(
 
 @proto.on_message(ContextPrompt, replies={Response, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: ContextPrompt):
-    response = get_completion(context=msg.context, prompt=msg.text)
+    response = get_text_completion(context=msg.context, prompt=msg.text)
     await ctx.send(sender, Response(text=response))
 
 
@@ -71,7 +71,7 @@ async def handle_request(ctx: Context, sender: str, msg: ContextPrompt):
 async def handle_structured_request(
     ctx: Context, sender: str, msg: StructuredOutputPrompt
 ):
-    response = get_completion(
+    response = get_text_completion(
         context="", prompt=msg.prompt, response_schema=msg.output_schema
     )
     await ctx.send(sender, StructuredOutputResponse(output=json.loads(response)))

@@ -49,13 +49,33 @@ def get_text_completion(prompt: str, tool: dict[str, Any] | None = None) -> str 
 def get_completion(
     content: list[dict[str, Any]], tool: dict[str, Any] | None = None
 ) -> str | None:
+
+    processed_content = []
+
+    for item in content:
+        if item.get("type") == "text":
+            processed_content.append({"type": "text", "text": item["text"]})
+        elif item.get("type") == "resource":
+            mime_type = item["mime_type"]
+            if mime_type.startswith("image/"):
+                processed_content.append({
+                    "type": "image",
+                    "source": {
+                        "type": "base64",
+                        "media_type": mime_type,
+                        "data": item["contents"],
+                    }
+                })
+            else:
+                return f"Unsupported mime type: {mime_type}"
+
     data = {
         "model": MODEL_ENGINE,
         "max_tokens": MAX_TOKENS,
         "messages": [
             {
                 "role": "user",
-                "content": content,
+                "content": processed_content,
             }
         ],
     }

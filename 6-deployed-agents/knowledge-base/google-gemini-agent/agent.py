@@ -3,7 +3,7 @@ import os
 from enum import Enum
 from typing import Any
 
-from ai import get_completion
+from ai import get_completion, get_text_completion
 from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit, AccessControlList
@@ -56,27 +56,27 @@ text_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Text-Response",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6), acl=acl,
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6, acl=acl),
 )
 
 code_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Code-Generator",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6), acl=acl,
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6, acl=acl),
 )
 
 struct_proto = QuotaProtocol(
     storage_reference=agent.storage,
     name="LLM-Structured-Response",
     version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6), acl=acl,
+    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6, acl=acl),
 )
 
 
 @text_proto.on_message(TextPrompt, replies={TextResponse, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
-    response = get_completion(msg.text, False)
+    response = get_text_completion(msg.text)
     if response is None:
         await ctx.send(
             sender,
@@ -89,7 +89,7 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
 
 @code_proto.on_message(CodePrompt, replies={CodeResponse, ErrorMessage})
 async def handle_codegen_request(ctx: Context, sender: str, msg: CodePrompt):
-    response = get_completion(msg.text, True)
+    response = get_text_completion(msg.text, True)
     if response is None:
         await ctx.send(
             sender,
@@ -106,7 +106,7 @@ async def handle_codegen_request(ctx: Context, sender: str, msg: CodePrompt):
 async def handle_structured_request(
     ctx: Context, sender: str, msg: StructuredOutputPrompt
 ):
-    response = get_completion(msg.prompt, False, msg.output_schema)
+    response = get_completion([{"type": "text", "text": msg.prompt}], response_schema=msg.output_schema)
     if response is None:
         await ctx.send(
             sender,
