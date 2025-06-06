@@ -1,5 +1,6 @@
 # AVCTL
 .secrets
+.env
 
 # Misc
 *.json
