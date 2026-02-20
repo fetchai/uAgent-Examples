@@ -1,5 +1,5 @@
 HOSTED_AGENTS_PATH="6-deployed-agents"
-CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility")
+CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility" "chained")
 EXCLUDE=("utility/website-validation-agent")
 
 cd $HOSTED_AGENTS_PATH

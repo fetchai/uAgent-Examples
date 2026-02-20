@@ -1,9 +1,8 @@
 import os
 import requests
 from datetime import datetime
-from enum import Enum
 from uagents import Agent, Context, Model, Protocol
-from uagents.experimental.quota import QuotaProtocol, RateLimit
+from uagents.experimental.chat_agent import ChatAgent
 
 class RedditPostsRequest(Model):
     limit: int
@@ -20,27 +19,22 @@ class RedditPostsResponse(Model):
     posts: list[RedditPost]
 
 
-AGENT_NAME = "Post Extractor Agent"
 AGENT_SEED = os.getenv("AGENT_SEED", "your-post-agent-seed")
-REDDIT_ID = os.getenv("REDDIT_ID_KEY")
-REDDIT_SECRET = os.getenv("REDDIT_SECRET_KEY")
-REDDIT_USER = os.getenv("REDDIT_USER_KEY")
+REDDIT_ID = os.getenv("REDDIT_ID")
+REDDIT_SECRET = os.getenv("REDDIT_SECRET")
+REDDIT_USER = os.getenv("REDDIT_USER")
 
 
 PORT = 8000
-agent = Agent(
-    name=AGENT_NAME,
+agent = ChatAgent(
+    name="Post Extractor Agent",
     seed=AGENT_SEED,
     port=PORT,
     endpoint=f"http://localhost:{PORT}/submit",
 )
 
-proto = QuotaProtocol(
-    storage_reference=agent.storage,
-    name="Post-Extractor",
-    version="0.1.0",
-    default_rate_limit=RateLimit(window_size_minutes=60, max_requests=6),
-)
+proto = Protocol(name="Post-Extractor", version="0.1.0")
+
 
 auth = requests.auth.HTTPBasicAuth(REDDIT_ID, REDDIT_SECRET)
 data = {
@@ -99,52 +93,6 @@ async def handle_request(ctx: Context, sender: str, msg: RedditPostsRequest):
     await ctx.send(sender, RedditPostsResponse(posts=posts))
 
 agent.include(proto)
-
-### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
-
-
-class HealthCheck(Model):
-    pass
-
-
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
-
-
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
-
-
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
-)
-
-
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    status = HealthStatus.UNHEALTHY
-    try:
-        if agent_is_healthy():
-            status = HealthStatus.HEALTHY
-    except Exception as err:
-        ctx.logger.error(err)
-    finally:
-        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
-
-
-agent.include(health_protocol, publish_manifest=True)
-
 
 if __name__ == "__main__":
     agent.run()

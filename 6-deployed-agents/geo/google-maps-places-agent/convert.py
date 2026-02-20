@@ -103,7 +103,9 @@ def normalize_lat_lng(arg):
     if _is_list(arg):
         return arg[0], arg[1]
 
-    raise TypeError("Expected a lat/lng dict or tuple, but got %s" % type(arg).__name__)
+    raise TypeError(
+        "Expected a lat/lng dict or tuple, " "but got %s" % type(arg).__name__
+    )
 
 
 def location_list(arg):
@@ -168,7 +170,7 @@ def _is_list(arg):
 def is_string(val):
     """Determines whether the passed value is a string, safe for 2/3."""
     try:
-        import basestring
+        basestring
     except NameError:
         return isinstance(val, str)
     return isinstance(val, basestring)
@@ -233,7 +235,9 @@ def components(arg):
     if isinstance(arg, dict):
         return "|".join(sorted(expand(arg)))
 
-    raise TypeError("Expected a dict for components, but got %s" % type(arg).__name__)
+    raise TypeError(
+        "Expected a dict for components, " "but got %s" % type(arg).__name__
+    )
 
 
 def bounds(arg):
@@ -271,7 +275,8 @@ def bounds(arg):
             return "%s|%s" % (latlng(arg["southwest"]), latlng(arg["northeast"]))
 
     raise TypeError(
-        "Expected a bounds (southwest/northeast) dict, but got %s" % type(arg).__name__
+        "Expected a bounds (southwest/northeast) dict, "
+        "but got %s" % type(arg).__name__
     )
 
 
@@ -281,7 +286,7 @@ def size(arg):
     elif _is_list(arg):
         return "%sx%s" % (arg[0], arg[1])
 
-    raise TypeError("Expected a size int or list, but got %s" % type(arg).__name__)
+    raise TypeError("Expected a size int or list, " "but got %s" % type(arg).__name__)
 
 
 def decode_polyline(polyline):

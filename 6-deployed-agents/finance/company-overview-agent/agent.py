@@ -2,8 +2,8 @@ import os
 import time
 from enum import Enum
 
-from chat_proto import chat_proto, struct_output_client_proto
-from uagents import Agent, Context, Model
+from uagents import Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -14,7 +14,7 @@ AGENT_NAME = os.getenv("AGENT_NAME", "Company Overview Agent")
 
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
@@ -34,14 +34,6 @@ proto = QuotaProtocol(
 )
 async def handle_request(ctx: Context, sender: str, msg: CompanyOverviewRequest):
     ctx.logger.info(f"Received company overview request for ticker: {msg.ticker}")
-    cache = ctx.storage.get(msg.ticker) or None
-    if cache:
-        if int(time.time()) - cache["timestamp"] < 86400:
-            cache.pop("timestamp")
-            ctx.logger.info(f"Sending cached data for ticker: {msg.ticker}")
-            await ctx.send(sender, CompanyOverviewResponse(overview=cache))
-            return
-
     try:
         ctx.logger.info(f"Fetching company overview for ticker: {msg.ticker}")
         output_json = fetch_overview_json(msg.ticker)
@@ -55,14 +47,8 @@ async def handle_request(ctx: Context, sender: str, msg: CompanyOverviewRequest)
         )
         return
     await ctx.send(sender, CompanyOverviewResponse(overview=output_json))
-    if "error" not in output_json:
-        output_json["timestamp"] = int(time.time())
-        ctx.storage.set(msg.ticker, output_json)
-
 
 agent.include(proto, publish_manifest=True)
-agent.include(chat_proto, publish_manifest=True)
-agent.include(struct_output_client_proto, publish_manifest=True)
 
 
 # Health check related code

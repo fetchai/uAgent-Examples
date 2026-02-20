@@ -4,6 +4,7 @@ from enum import Enum
 import requests
 from bs4 import BeautifulSoup
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol
 from uagents_core.models import ErrorMessage
 
@@ -20,7 +21,7 @@ class WebsiteScraperResponse(Model):
 
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,

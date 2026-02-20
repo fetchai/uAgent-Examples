@@ -29,12 +29,14 @@ async def find_coordinates(address):
 
         data = response.json()
 
-        # Check if results are available in the response
-        if "results" in data:
-            return {
-                "latitude": data["results"][0]["geometry"]["location"]["lat"],
-                "longitude": data["results"][0]["geometry"]["location"]["lng"],
-            }
+        results = data.get("results", [])
+        if data.get("status") != "OK" or not results:
+            return {"error": f"Geocode failed: {data.get('status')} {data.get('error_message', '')}".strip()}
+
+        return {
+            "latitude": results[0]["geometry"]["location"]["lat"],
+            "longitude": results[0]["geometry"]["location"]["lng"],
+        }
 
         return {"error": "Address not found in the response."}
     except requests.exceptions.RequestException as req_err:

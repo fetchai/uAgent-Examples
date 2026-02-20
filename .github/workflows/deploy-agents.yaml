@@ -5,6 +5,7 @@ on:
     branches:
       - main
     paths:
+      - "6-deployed-agents/chained/**"
       - "6-deployed-agents/finance/**"
       - "6-deployed-agents/geo/**"
       - "6-deployed-agents/knowledge-base/**"

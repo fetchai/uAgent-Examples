@@ -18,7 +18,7 @@ if not HUGGINGFACE_API_KEY:
 
 
 async def get_finbert_sentiment(text) -> FinancialSentimentResponse:
-    API_URL = "https://api-inference.huggingface.co/models/ProsusAI/finbert"
+    API_URL = "https://router.huggingface.co/hf-inference/models/ProsusAI/finbert"
     headers = {"Authorization": f"Bearer {HUGGINGFACE_API_KEY}"}
 
     payload = {
@@ -26,6 +26,7 @@ async def get_finbert_sentiment(text) -> FinancialSentimentResponse:
     }
 
     response = requests.post(API_URL, headers=headers, json=payload, timeout=30)
+    response.raise_for_status()
     data = response.json()
     if "error" in data:
         raise ValueError(data["error"])
