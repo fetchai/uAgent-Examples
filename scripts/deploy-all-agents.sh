@@ -2,6 +2,8 @@ HOSTED_AGENTS_PATH="6-deployed-agents"
 CATEGORIES=("finance" "geo" "knowledge-base" "search" "travel" "utility" "chained")
 EXCLUDE=("utility/website-validation-agent")
 
+ALL_AGENTS=$(avctl hosting get agents | grep -o 'agent1[^ ]*' | tr '\n' ',' | sed 's/,$//')
+
 cd $HOSTED_AGENTS_PATH
 
 for category in ${CATEGORIES[@]}; do
@@ -26,6 +28,10 @@ for category in ${CATEGORIES[@]}; do
 
         # Create a .avctl folder for new agents if it doesn't exist
         avctl hosting init
+
+        echo BYPASS_RATE_LIMIT=$ALL_AGENTS >> .env
+        echo AGENTVERSE_URL="https://agentverse.ai" >> .env
+        echo ASI1_API_KEY=$ASI1_API_KEY >> .secrets
 
         # Get the agent's name from the README.md top line header
         agent_name=$(head -n 1 README.md | sed -e 's/#//g' | xargs)
