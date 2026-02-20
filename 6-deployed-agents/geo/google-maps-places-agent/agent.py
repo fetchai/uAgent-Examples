@@ -12,12 +12,13 @@ from client import Client
 from communication import POIAreaRequest, POIResponse
 from logic import find_pois
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
 AGENT_NAME = os.getenv("AGENT_NAME", "Google Maps Places Agent")
 
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed="Google Places Agent secret very crypto much safe 3",
 )

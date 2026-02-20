@@ -4,6 +4,7 @@ from typing import List
 
 import requests
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -14,7 +15,7 @@ if TAVILY_API_KEY == "<your-tavily-api-key>":
     raise ValueError("Please provide your Tavily API key.")
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,

@@ -23,15 +23,15 @@ from helpers import (
 )
 from schemas import Flight, FlightsSearchRequest, FlightsSearchResponse
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-from chat_proto import chat_proto, struct_output_client_proto
 
 FLIGHTS_SEED = os.getenv("FLIGHTS_SEED", "flights adaptor really secret phrase :)))")
 AGENT_NAME = os.getenv("AGENT_NAME", "Flights Retriever Agent")
 
-agent = Agent(name=AGENT_NAME, seed=FLIGHTS_SEED)
+agent = ChatAgent(name=AGENT_NAME, seed=FLIGHTS_SEED)
 
 
 proto = QuotaProtocol(
@@ -96,13 +96,10 @@ async def direct_flight_offers(ctx: Context, sender: str, msg: FlightsSearchRequ
 
         await ctx.send(sender, FlightsSearchResponse(flights=flights))
     except Exception as exc:
-        ctx.logger.exception(exc)
         await ctx.send(sender, ErrorMessage(error="Internal server error."))
 
 
 agent.include(proto, publish_manifest=True)
-agent.include(chat_proto, publish_manifest=True)
-agent.include(struct_output_client_proto, publish_manifest=True)
 
 
 ### Health check related code

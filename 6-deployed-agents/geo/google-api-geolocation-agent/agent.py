@@ -1,11 +1,11 @@
 import os
 from enum import Enum
 
-from uagents import Agent, Context, Model
+from uagents import Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-from chat_proto import chat_proto, struct_output_client_proto
 from coordinates import find_coordinates, GeolocationResponse, GeolocationRequest
 
 AGENT_SEED = os.getenv("AGENT_SEED", "google-geolocation-agent")
@@ -13,7 +13,7 @@ AGENT_NAME = os.getenv("AGENT_NAME", "Google API Geolocation Agent")
 
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
@@ -32,11 +32,6 @@ proto = QuotaProtocol(
 @proto.on_message(GeolocationRequest, replies={GeolocationResponse, ErrorMessage})
 async def handle_request(ctx: Context, sender: str, msg: GeolocationRequest):
     ctx.logger.info(f"Received Address resolution request: {msg.address}")
-    cache = ctx.storage.get(msg.address) or None
-    if cache:
-        await ctx.send(sender, GeolocationResponse(**cache))
-        return
-
     try:
         coordinates = await find_coordinates(msg.address)
     except Exception as err:
@@ -49,12 +44,9 @@ async def handle_request(ctx: Context, sender: str, msg: GeolocationRequest):
         return
 
     await ctx.send(sender, GeolocationResponse(**coordinates))
-    ctx.storage.set(msg.address, coordinates)
 
 
 agent.include(proto, publish_manifest=True)
-agent.include(chat_proto, publish_manifest=True)
-agent.include(struct_output_client_proto, publish_manifest=True)
 
 
 ### Health check related code

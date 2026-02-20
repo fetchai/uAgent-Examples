@@ -32,6 +32,6 @@ def fetch_overview_json(ticker: str) -> dict:
     data = response.json()
 
     if not data or "Symbol" not in data:
-        return {"error": "No valid data found in the response."}
+        return {"error": f"No valid data found in the response. {data}"}
 
     return data

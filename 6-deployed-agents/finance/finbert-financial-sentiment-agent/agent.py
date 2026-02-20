@@ -1,8 +1,8 @@
 import os
 from enum import Enum
 
-from chat_proto import chat_proto
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -12,7 +12,7 @@ AGENT_SEED = os.getenv("AGENT_SEED", "<finbert-sentiment-agent>")
 AGENT_NAME = os.getenv("AGENT_NAME", "Finbert Financial Sentiment Agent")
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
@@ -36,7 +36,6 @@ async def handle_request(ctx: Context, sender: str, msg: FinancialSentimentReque
     try:
         sentiment = await get_finbert_sentiment(msg.text)
     except Exception as err:
-        ctx.logger.error(err)
         await ctx.send(
             sender,
             ErrorMessage(
@@ -49,7 +48,6 @@ async def handle_request(ctx: Context, sender: str, msg: FinancialSentimentReque
 
 
 agent.include(proto, publish_manifest=True)
-agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code

@@ -1,9 +1,9 @@
 import os
 from enum import Enum
 
-from chat_proto import chat_proto
 from grammar import check_grammar
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -20,7 +20,7 @@ class GrammarCheckResponse(Model):
 
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
@@ -56,7 +56,6 @@ async def on_message(ctx: Context, sender: str, msg: GrammarCheckRequest):
 
 
 agent.include(grammar_check_protocol)
-agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code

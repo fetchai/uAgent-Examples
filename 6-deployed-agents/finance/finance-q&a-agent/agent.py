@@ -2,8 +2,8 @@ import os
 from enum import Enum
 
 from ai import get_completion
-from chat_proto import chat_proto
 from uagents import Agent, Context, Model
+from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -11,7 +11,7 @@ AGENT_SEED = os.getenv("AGENT_SEED", "finance_qa_agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Finance Q&A Agent")
 
 PORT = 8000
-agent = Agent(
+agent = ChatAgent(
     name=AGENT_NAME,
     seed=AGENT_SEED,
     port=PORT,
@@ -51,7 +51,6 @@ async def finance_qa_query(ctx: Context, sender: str, msg: FinanceQA):
 
 
 agent.include(proto, publish_manifest=True)
-agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code
