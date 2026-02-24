@@ -8,12 +8,11 @@ class SentimentResponse(Model):
 
 
 SEED_PHRASE = ""
-AGENT_MAILBOX_KEY = ""
 
 sentimentagent = Agent(
     name="SentimentAgent",  # or any name
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 print(sentimentAgent.address)

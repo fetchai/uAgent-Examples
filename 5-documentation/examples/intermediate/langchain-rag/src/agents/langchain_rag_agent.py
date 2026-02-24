@@ -21,13 +21,13 @@ nltk.download("averaged_perceptron_tagger")
 
 
 LANGCHAIN_RAG_SEED = "YOUR_LANGCHAIN_RAG_SEED"
-AGENT_MAILBOX_KEY = "YOUR_MAILBOX_KEY"
 
 agent = Agent(
     name="langchain_rag_agent",
     seed=LANGCHAIN_RAG_SEED,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
+
 fund_agent_if_low(agent.wallet.address())
 
 docs_bot_protocol = Protocol("DocsBot")

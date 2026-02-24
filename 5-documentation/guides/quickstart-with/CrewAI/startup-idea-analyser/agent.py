@@ -6,13 +6,12 @@ from uagents.setup import fund_agent_if_low
 
 from crew_ai import MarketResearchProcess
 
-AGENT_MAILBOX_KEY = os.environ.get("AGENT_MAILBOX_KEY")
 SEED_PHRASE = "YOUR_SEED_PHRASE"
 
 agent = Agent(
     name="startup idea analyzer",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 protocol = Protocol("Startup idea Analyzer version", version="0.1.2")

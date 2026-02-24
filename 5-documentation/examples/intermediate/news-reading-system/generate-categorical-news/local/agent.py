@@ -14,15 +14,12 @@ class GenerateNews(Model):
 # First generate a secure seed phrase (e.g. https://pypi.org/project/mnemonic/)
 SEED_PHRASE = "put_your_seed_phrase_here"
 
-# Now go to https://agentverse.ai, register your agent in the Mailroom by providing the address you just copied.
-# Then, copy the agent's mailbox key and insert it here below inline
-AGENT_MAILBOX_KEY = "put_your_AGENT_MAILBOX_KEY_here"
 
 # Now your agent is ready to join the agentverse!
 generate_cat_news_agent = Agent(
     name="generate_cat_news_agent",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 # Copy the address shown below
