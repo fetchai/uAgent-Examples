@@ -1,7 +1,7 @@
 import time
 
 from client import Client
-from communication import POI, Coordinates
+from communication import POI
 from uagents import Context
 
 
@@ -41,7 +41,7 @@ async def find_pois(
             # wait a bit to not trigger the API rate limit (https://github.com/googlemaps/google-maps-services-python/issues/366)
             time.sleep(2)
         except Exception as e:
-            ctx.logger.error(e)
+            ctx.logger.error(str(e))
             break
 
     if pois:
@@ -65,10 +65,8 @@ async def find_pois(
                 POI(
                     placekey=p["place_id"] or "",
                     location_name=p["name"] or "",
-                    location=Coordinates(
-                        latitude=p["geometry"]["location"]["lat"],
-                        longitude=p["geometry"]["location"]["lng"],
-                    ),
+                    latitude=p["geometry"]["location"]["lat"],
+                    longitude=p["geometry"]["location"]["lng"],
                     address=p["formatted_address"] or "",
                     city=addr["administrative_area_level_2"]
                     if "administrative_area_level_2" in addr
