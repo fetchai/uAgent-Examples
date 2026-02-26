@@ -45,8 +45,8 @@ async def handle_poi_request(ctx: Context, sender: str, msg: POIAreaRequest):
         client=gmaps,
         ctx=ctx,
         query_string=msg.query_string,
-        lat=msg.loc_search.latitude,
-        lng=msg.loc_search.longitude,
+        lat=msg.latitude,
+        lng=msg.longitude,
         radius_in_m=msg.radius_in_m,
         limit=msg.limit,
     )
@@ -55,7 +55,8 @@ async def handle_poi_request(ctx: Context, sender: str, msg: POIAreaRequest):
     await ctx.send(
         sender,
         POIResponse(
-            loc_search=msg.loc_search,
+            latitude=msg.latitude,
+            longitude=msg.longitude,
             radius_in_m=msg.radius_in_m,
             data_origin="Google Places API",
             data=response,
