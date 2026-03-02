@@ -125,9 +125,10 @@ async def handle_message(ctx: Context, sender: str, msg: ChatMessage):
 
     try:
         out_png = generate_image(prompt, input_image=input_image)
+        asset_name = f"img_{ctx.session}_{datetime.utcnow().strftime('%Y%m%dT%H%M%SZ')}"
 
         asset_id = external_storage.create_asset(
-            name=str(ctx.session),
+            name=asset_name,
             content=out_png,
             mime_type="image/png",
         )
