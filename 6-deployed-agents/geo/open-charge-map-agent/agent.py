@@ -2,7 +2,7 @@ import os
 from enum import Enum
 
 from api_adapter import OCMAPI, Unit
-from models import POI, Coordinates, POIAreaRequest, POIResponse
+from models import POI, POIAreaRequest, POIResponse
 from uagents import Agent, Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
@@ -72,42 +72,28 @@ def get_charger_info(
             pois.append(
                 POI(
                     placekey=charger["UUID"] or "",
-                    location_name=charger["AddressInfo"]["Title"]
-                    if charger["AddressInfo"]
-                    else "",
-                    brands=[charger["OperatorInfo"]["Title"]]
-                    if charger["OperatorInfo"]
-                    else [],
+                    location_name=charger["AddressInfo"]["Title"] if charger.get("AddressInfo") else "",
+                    brands=[charger["OperatorInfo"]["Title"]] if charger.get("OperatorInfo") else [],
                     top_category="Automotive Services",
                     sub_category="Charging Station",
-                    # naics_code=336320,  # check https://www.naics.com/search/
-                    location=Coordinates(
-                        latitude=charger["AddressInfo"]["Latitude"],
-                        longitude=charger["AddressInfo"]["Longitude"],
+                    latitude=charger["AddressInfo"]["Latitude"] if charger.get("AddressInfo") else 0.0,
+                    longitude=charger["AddressInfo"]["Longitude"] if charger.get("AddressInfo") else 0.0,
+                    address=charger["AddressInfo"]["AddressLine1"] if charger.get("AddressInfo") else "",
+                    city=charger["AddressInfo"]["Town"] if charger.get("AddressInfo") else "",
+                    region=charger["AddressInfo"]["StateOrProvince"] if charger.get("AddressInfo") else "",
+                    postal_code=charger["AddressInfo"]["Postcode"] if charger.get("AddressInfo") else "",
+                    iso_country_code=(
+                        charger["AddressInfo"]["Country"]["ISOCode"]
+                        if charger.get("AddressInfo") and charger["AddressInfo"].get("Country")
+                        else ""
                     ),
-                    address=charger["AddressInfo"]["AddressLine1"]
-                    if charger["AddressInfo"]
-                    else "",
-                    city=charger["AddressInfo"]["Town"]
-                    if charger["AddressInfo"]
-                    else "",
-                    region=charger["AddressInfo"]["StateOrProvince"]
-                    if charger["AddressInfo"]
-                    else "",
-                    postal_code=charger["AddressInfo"]["Postcode"]
-                    if charger["AddressInfo"]
-                    else "",
-                    iso_country_code=charger["AddressInfo"]["Country"]["ISOCode"]
-                    if charger["AddressInfo"]
-                    else "",
-                    metadata={  # add more metadata if necessary
-                        "UsageCost": charger["UsageCost"] or "",
-                        "status": charger["StatusType"]["Title"]
-                        if charger["StatusType"]
-                        else "",
+                    metadata={
+                        "UsageCost": charger.get("UsageCost") or "",
+                        "status": charger["StatusType"]["Title"] if charger.get("StatusType") else "",
                     },
                 )
             )
+
     return pois
 
 
@@ -118,8 +104,8 @@ async def handle_request(ctx: Context, sender: str, msg: POIAreaRequest):
 
     try:
         pois = get_charger_info(
-            latitude=msg.loc_search.latitude,
-            longitude=msg.loc_search.longitude,
+            latitude=msg.latitude,
+            longitude=msg.longitude,
             radius=msg.radius_in_m / 1000,
             limit=msg.limit,
         )
@@ -140,12 +126,10 @@ async def handle_request(ctx: Context, sender: str, msg: POIAreaRequest):
     await ctx.send(
         sender,
         POIResponse(
-            loc_search=Coordinates(
-                latitude=msg.loc_search.latitude,
-                longitude=msg.loc_search.longitude,
-            ),
+            latitude=msg.latitude,
+            longitude=msg.longitude,
             radius_in_m=msg.radius_in_m,
-            data_origin=agent.name,
+            data_origin="",
             data=pois,
         ),
     )

@@ -3,13 +3,9 @@ from typing import Any, Dict, List, Optional
 from uagents import Model
 
 
-class Coordinates(Model):
+class POIAreaRequest(Model):
     latitude: float
     longitude: float
-
-
-class POIAreaRequest(Model):
-    loc_search: Coordinates
     radius_in_m: int
     limit: int = 20
     query_string: str
@@ -22,7 +18,8 @@ class POI(Model):
     brands: Optional[list[str]] = None
     top_category: Optional[str] = None
     sub_category: Optional[str] = None
-    location: Coordinates
+    latitude: float
+    longitude: float
     address: str
     city: str
     region: Optional[str] = None
@@ -32,7 +29,8 @@ class POI(Model):
 
 
 class POIResponse(Model):
-    loc_search: Coordinates
+    latitude: float
+    longitude: float
     radius_in_m: int
     data_origin: str
     data: List[POI]
