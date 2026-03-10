@@ -1,5 +1,6 @@
 import os
-from uagents import Agent, Context
+from enum import Enum
+from uagents import Agent, Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from models import (
@@ -12,6 +13,7 @@ from models import (
 )
 
 AGENT_SEED = os.getenv("AGENT_SEED", "your-blog-agent-seed")
+AGENT_NAME = os.getenv("AGENT_NAME", "Blog Agent")
 TOPIC_AGENT_ADDRESS = os.getenv("topic-agent-address")
 AI_AGENT_ADDRESS = os.getenv("ai-agent-address")
 
@@ -86,6 +88,36 @@ async def handle_request(ctx: Context, sender: str, msg: BlogRequest):
 
 
 agent.include(proto)
+
+
+# Health Check code
+class HealthCheck(Model):
+    pass
+
+
+class HealthStatus(str, Enum):
+    HEALTHY = "healthy"
+    UNHEALTHY = "unhealthy"
+
+
+class AgentHealth(Model):
+    agent_name: str
+    status: HealthStatus
+
+
+health_protocol = QuotaProtocol(
+    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+)
+
+
+@health_protocol.on_message(HealthCheck, replies={AgentHealth})
+async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
+    await ctx.send(
+        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
+    )
+
+
+agent.include(health_protocol, publish_manifest=True)
 
 if __name__ == "__main__":
     agent.run()
