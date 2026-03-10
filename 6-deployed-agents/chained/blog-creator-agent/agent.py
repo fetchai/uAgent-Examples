@@ -1,6 +1,6 @@
 import os
 from enum import Enum
-from uagents import Agent, Context
+from uagents import Agent, Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from models import (
@@ -13,6 +13,7 @@ from models import (
 )
 
 AGENT_SEED = os.getenv("AGENT_SEED", "your-blog-agent-seed")
+AGENT_NAME = os.getenv("AGENT_NAME", "Blog Agent")
 TOPIC_AGENT_ADDRESS = os.getenv("topic-agent-address")
 AI_AGENT_ADDRESS = os.getenv("ai-agent-address")
 

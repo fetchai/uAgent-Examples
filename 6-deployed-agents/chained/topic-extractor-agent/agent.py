@@ -13,6 +13,7 @@ from models import (
 )
 
 AGENT_SEED = os.getenv("AGENT_SEED", "your-topic-agent-seed")
+AGENT_NAME = os.getenv("AGENT_NAME", "Topic Agent")
 POSTS_AGENT_ADDRESS = os.getenv("posts-agent-address")
 OPEN_AI_AGENT_ADDRESS = os.getenv("openai-agent-address")
 

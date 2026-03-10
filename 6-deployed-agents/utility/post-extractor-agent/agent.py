@@ -22,6 +22,7 @@ class RedditPostsResponse(Model):
 
 
 AGENT_SEED = os.getenv("AGENT_SEED", "your-post-agent-seed")
+AGENT_NAME = os.getenv("AGENT_NAME", "Post Extractor Agent")
 REDDIT_ID = os.getenv("REDDIT_ID")
 REDDIT_SECRET = os.getenv("REDDIT_SECRET")
 REDDIT_USER = os.getenv("REDDIT_USER")
@@ -78,7 +79,6 @@ async def handle_request(ctx: Context, sender: str, msg: RedditPostsRequest):
                 title=post_data["title"],
                 author=post_data["author"],
                 url=post_data["url"],
-                created=datetime.fromtimestamp(post_data["created_utc"]).isoformat(),
                 content=post_data["selftext"] if post_data["selftext"] else "[No text content]",
             )
 
