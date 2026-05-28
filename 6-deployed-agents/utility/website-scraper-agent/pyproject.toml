@@ -1,15 +1,17 @@
-[tool.poetry]
+[project]
 name = "website-scraping-agent"
 version = "0.1.0"
-description = "Website Scraping Agent"
-authors = ["Kshipra Dhame <kshipra.dhame@fetch.ai>"]
+description = "This agent returns the content of a given website"
+authors = [
+  { name = "Kshipra Dhame", email = "kshipra.dhame@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.0"
-requests = "^2.32.3"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.22.0",
+  "requests>=2.32.3",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

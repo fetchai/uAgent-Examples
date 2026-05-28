@@ -1,17 +1,21 @@
-[tool.poetry]
+[project]
 name = "gemini-agent"
 version = "0.1.0"
-description = ""
-authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
+description = "This agent is a simple wrapper around Google's Gemini Large Language Model"
+authors = [
+  { name = "Florian Wilde", email = "florian.wilde@fetch.ai" }
+]
 readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "uagents>=0.22.4",
+  "uagents-core>=0.3.1",
+  "google-genai>=1.4.0",
+]
+
+[tool.poetry]
 packages = [{ include = "gemini" }]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-uagents = "^0.22.4"
-uagents-core = "^0.3.1"
-google-genai = "^1.4.0"
-
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

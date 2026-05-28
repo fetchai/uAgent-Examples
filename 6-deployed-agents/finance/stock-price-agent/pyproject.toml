@@ -1,15 +1,17 @@
-[tool.poetry]
+[project]
 name = "stocks-agent"
 version = "0.1.0"
-description = "This agent helps you to get stocks price for given ticker symbol."
-authors = ["Abhi Gangani <abhi.gangani@fetch.ai>"]
+description = "This agent will find share prices of a given company ticker."
+authors = [
+  { name = "Abhi Gangani", email = "abhi.gangani@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.0"
-requests = "^2.32.3"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.22.0",
+  "requests>=2.32.3",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

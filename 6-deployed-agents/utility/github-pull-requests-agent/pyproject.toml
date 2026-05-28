@@ -1,15 +1,17 @@
-[tool.poetry]
+[project]
 name = "github-pr-agent"
 version = "0.1.0"
-description = "GitHub PR Agent"
-authors = ["Kshipra Dhame <kshipra.dhame@fetch.ai>"]
+description = "This agent returns a list of open pull requests in a github repository with in an organisation"
+authors = [
+  { name = "Kshipra Dhame", email = "kshipra.dhame@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.18.1"
-requests = "^2.32.3"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.18.1",
+  "requests>=2.32.3",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

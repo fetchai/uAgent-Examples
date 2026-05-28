@@ -1,16 +1,18 @@
-[tool.poetry]
+[project]
 name = "asi1-agent"
 version = "0.1.0"
-description = ""
-authors = ["Attila Bagoly <attila.bagoly@fetch.ai>"]
+description = "This agent is a simple wrapper around asi1-mini Large Language Model."
+authors = [
+  { name = "Attila Bagoly", email = "attila.bagoly@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.4"
-uagents-core = "^0.3.1"
-openai = "^1.82.0"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.22.4",
+  "uagents-core>=0.3.1",
+  "openai>=1.82.0",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

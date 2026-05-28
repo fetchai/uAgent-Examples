@@ -1,14 +1,16 @@
-[tool.poetry]
+[project]
 name = "tavily-agent"
 version = "0.1.0"
-description = "TaVILY Agent"
-authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
+description = "This agent searches the web and returns quick, relevant results for a user’s prompt."
+authors = [
+  { name = "Florian Wilde", email = "florian.wilde@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.0"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.22.0",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

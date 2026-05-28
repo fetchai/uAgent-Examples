@@ -1,15 +1,17 @@
-[tool.poetry]
+[project]
 name = "post-extractor-agent"
 version = "0.1.0"
-description = "Post Extractor Agent"
-authors = ["Alejandro <alejandro.madrigal@fetch.ai>"]
+description = "This agent retrieves the latest requested posts from Reddit"
+authors = [
+  { name = "Alejandro", email = "alejandro.madrigal@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.0"
-requests = "^2.32.3"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.22.0",
+  "requests>=2.32.3",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
