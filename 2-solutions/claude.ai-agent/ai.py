@@ -20,7 +20,7 @@ HEADERS = {
 # "claude-3-5-sonnet-20240620",  # Most intelligent model
 # "claude-3-opus-20240229",  # Excels at writing and complex tasks
 # "claude-3-sonnet-20240229",  # Balance of speed and intelligence
-# "claude-3-haiku-20240307",  # Fast & cost-effective
+# "claude-haiku-4-5",  # Fast & cost-effective
 
 
 # Send a prompt to the AI model and return the content of the completion

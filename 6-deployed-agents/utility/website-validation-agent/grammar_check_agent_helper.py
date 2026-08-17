@@ -17,7 +17,7 @@ if OPENAI_API_KEY is None:
 default_llm = ChatOpenAI(
     openai_api_key=OPENAI_API_KEY,
     temperature=0.1,
-    model_name="gpt-4o-mini",
+    model_name="gpt-5.4-mini",
 )
 
 
