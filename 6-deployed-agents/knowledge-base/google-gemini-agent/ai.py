@@ -6,7 +6,7 @@ from google import genai
 from google.genai import types
 
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "1024"))
-MODEL_ENGINE = os.getenv("MODEL_ENGINE", "gemini-2.0-flash")
+MODEL_ENGINE = os.getenv("MODEL_ENGINE", "gemini-3.6-flash")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_GEMINI_API_KEY")
 if GEMINI_API_KEY is None or GEMINI_API_KEY == "YOUR_GEMINI_API_KEY":
     raise ValueError(
