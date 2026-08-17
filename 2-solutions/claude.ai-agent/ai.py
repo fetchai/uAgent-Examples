@@ -10,7 +10,7 @@ if ANTHROPIC_API_KEY is None or ANTHROPIC_API_KEY == "YOUR_ANTHROPIC_API_KEY":
     raise ValueError(
         "You need to provide an API key: https://platform.openai.com/api-keys"
     )
-MODEL_ENGINE = os.getenv("MODEL_ENGINE", "claude-3-haiku-20240307")
+MODEL_ENGINE = os.getenv("MODEL_ENGINE", "claude-haiku-4-5")
 HEADERS = {
     "x-api-key": ANTHROPIC_API_KEY,
     "anthropic-version": "2023-06-01",
@@ -20,7 +20,7 @@ HEADERS = {
 # "claude-3-5-sonnet-20240620",  # Most intelligent model
 # "claude-3-opus-20240229",  # Excels at writing and complex tasks
 # "claude-3-sonnet-20240229",  # Balance of speed and intelligence
-# "claude-3-haiku-20240307",  # Fast & cost-effective
+# "claude-haiku-4-5",  # Fast & cost-effective
 
 
 # Send a prompt to the AI model and return the content of the completion

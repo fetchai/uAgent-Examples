@@ -120,7 +120,7 @@ async def answer_question(ctx: Context, sender: str, msg: RagRequest):
     prompt_template = ChatPromptTemplate.from_template(PROMPT_TEMPLATE)
     prompt = prompt_template.format(context=context_text, question=msg.question)
 
-    model = ChatOpenAI(model="gpt-4o-mini")
+    model = ChatOpenAI(model="gpt-5.4-mini")
     response = model.predict(prompt)
     ctx.logger.info(f"Response: {response}")
     await ctx.send(
