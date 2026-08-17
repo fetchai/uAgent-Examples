@@ -71,6 +71,7 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
+        return
     await ctx.send(sender, TextResponse(text=response))
 
 
@@ -88,6 +89,7 @@ async def handle_structured_request(
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
+        return
     await ctx.send(sender, StructuredOutputResponse(output=response))
 
 

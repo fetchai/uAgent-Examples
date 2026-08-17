@@ -58,6 +58,7 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
+        return
     await ctx.send(sender, Response(text=response))
 
 
@@ -71,6 +72,7 @@ async def handle_codegen_request(ctx: Context, sender: str, msg: CodePrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
+        return
     await ctx.send(sender, Response(text=response))
 
 
