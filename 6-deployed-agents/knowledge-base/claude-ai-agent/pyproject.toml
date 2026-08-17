@@ -1,18 +1,21 @@
-[tool.poetry]
+[project]
 name = "claude-agent"
 version = "0.1.0"
-description = ""
-authors = ["Florian Wilde <florian.wilde@fetch.ai>"]
+description = "This agent is a wrapper around the Claude.ai interface"
+authors = [
+  { name = "Florian Wilde", email = "florian.wilde@fetch.ai" }
+]
 readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.25.4",
+  "uagents-core>=0.4.9",
+  "requests>=2.32.3",
+]
+
+[tool.poetry]
 packages = [{ include = "claude" }]
 
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.4"
-uagents-core = "^0.3.1"
-requests = "^2.32.3"
-
-
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

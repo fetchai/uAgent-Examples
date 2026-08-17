@@ -1,16 +1,19 @@
-[tool.poetry]
+[project]
 name = "image-generator-agent"
 version = "0.1.0"
-description = "This agent is integrated with LangChain's DallEAPIWrapper to generate images based on textual descriptions."
-authors = ["Alejandro <alejandro.madrigal@fetch.ai>"]
+description = "This agent uses OpenAI’s gpt-image-1.5 image model to generate images from text and perform image-to-image edits when an input image is provided"
+authors = [
+  { name = "Alejandro", email = "alejandro.madrigal@fetch.ai" }
+]
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.17.0"
-langchain-community = "^0.0.25"
-langchain-openai = ">=0.0.6"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.25.4",
+  "uagents-core>=0.4.9",
+  "langchain-community>=0.0.25",
+  "langchain-openai>=0.0.6",
+]
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

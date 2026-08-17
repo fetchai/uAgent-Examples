@@ -7,7 +7,8 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10,<3.13"
-uagents = "^0.15.2"
+uagents = "^0.25.4"
+uagents-core = "^0.4.9"
 openai = "^1.16.1"
 langchain = "^0.2.8"
 crewai = "0.36.0"

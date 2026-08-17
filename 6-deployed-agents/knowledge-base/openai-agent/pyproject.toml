@@ -1,18 +1,22 @@
-[tool.poetry]
+[project]
 name = "openai-agent"
 version = "0.1.0"
-description = ""
-authors = ["James Riehl <james.riehl@fetch.ai>"]
+description = "This agent is a simple wrapper around OpenAI's `gpt-5.4-mini` Large Language Model"
+authors = [
+  { name = "James Riehl", email = "james.riehl@fetch.ai" }
+]
 readme = "README.md"
+requires-python = ">=3.10,<3.13"
+dependencies = [
+  "uagents>=0.25.4",
+  "uagents-core>=0.4.9",
+  "openai>=1.82.0",
+  "requests>=2.32.3",
+]
+
+[tool.poetry]
 packages = [{ include = "openai" }]
 
-[tool.poetry.dependencies]
-python = "^3.10,<3.13"
-uagents = "^0.22.4"
-uagents-core = "^0.3.1"
-openai = "^1.82.0"
-requests = "^2.32.3"
-
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
