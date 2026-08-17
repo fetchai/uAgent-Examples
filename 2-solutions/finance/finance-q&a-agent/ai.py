@@ -4,7 +4,7 @@ import os
 import requests
 
 OPENAI_URL = "https://api.openai.com/v1/chat/completions"
-MODEL_ENGINE = os.getenv("MODEL_ENGINE", "gpt-4o-mini")
+MODEL_ENGINE = os.getenv("MODEL_ENGINE", "gpt-5.4-mini")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "1024"))
 HEADERS = {
