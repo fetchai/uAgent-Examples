@@ -9,12 +9,10 @@ ALICE_SEED = "put_your_seed_phrase_here"
 
 print(f"Your agent's address is: {Agent(seed=ALICE_SEED).address}")
 
-AGENT_MAILBOX_KEY = "put_your_AGENT_MAILBOX_KEY_here"
-
 agent = Agent(
     name="alice",
     seed=ALICE_SEED,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 

@@ -16,13 +16,11 @@ SEED_PHRASE = "<Secret Phrase for your agent>"
 # Copy the address shown below
 print(f"Your agent's address is: {Agent(seed=SEED_PHRASE).address}")
 
-AGENT_MAILBOX_KEY = "Your_mailbox_address"
-
 # Now your agent is ready to join the agentverse!
 WikiAgent = Agent(
     name="Wiki Agent",
     seed=SEED_PHRASE,
-    mailbox=f"{AGENT_MAILBOX_KEY}@https://agentverse.ai",
+    mailbox=True
 )
 
 wiki_protocol = Protocol("Wiki Protocol")
