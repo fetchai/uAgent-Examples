@@ -2,11 +2,12 @@ import os
 from enum import Enum
 from typing import Any
 
+from agent_health import anthropic_models, cached_check
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import AccessControlList, QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-from ai import get_structured_response, get_text_completion
+from ai import ANTHROPIC_API_KEY, MODEL_ENGINE, get_structured_response, get_text_completion
 from chat_proto import chat_proto
 
 AGENT_SEED = os.getenv("AGENT_SEED", "claude-test-agent")
@@ -71,7 +72,6 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-        return
     await ctx.send(sender, TextResponse(text=response))
 
 
@@ -89,7 +89,6 @@ async def handle_structured_request(
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-        return
     await ctx.send(sender, StructuredOutputResponse(output=response))
 
 
@@ -99,15 +98,11 @@ agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: anthropic_models(ANTHROPIC_API_KEY, model=MODEL_ENGINE),
+    )
 
 
 class HealthCheck(Model):
@@ -133,7 +128,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)

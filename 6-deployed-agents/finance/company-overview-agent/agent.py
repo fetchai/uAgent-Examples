@@ -2,12 +2,18 @@ import os
 import time
 from enum import Enum
 
+from agent_health import alpha_vantage, cached_check
 from uagents import Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-from functions import CompanyOverviewResponse, CompanyOverviewRequest, fetch_overview_json
+from functions import (
+    ALPHAVANTAGE_API_KEY,
+    CompanyOverviewRequest,
+    CompanyOverviewResponse,
+    fetch_overview_json,
+)
 
 AGENT_SEED = os.getenv("AGENT_SEED", "company-overview")
 AGENT_NAME = os.getenv("AGENT_NAME", "Company Overview Agent")
@@ -52,8 +58,11 @@ agent.include(proto, publish_manifest=True)
 
 
 # Health check related code
-def agent_is_healthy():
-    return True
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: alpha_vantage(ALPHAVANTAGE_API_KEY),
+    )
 
 
 class HealthCheck(Model):
@@ -79,8 +88,8 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        agent_is_healthy()
-        status = HealthStatus.HEALTHY
+        if await agent_is_healthy(ctx):
+            status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)
     finally:

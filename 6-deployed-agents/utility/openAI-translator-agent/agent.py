@@ -1,7 +1,8 @@
 import os
 from enum import Enum
 
-from ai import get_completion
+from agent_health import cached_check, openai_models
+from ai import MODEL_ENGINE, OPENAI_API_KEY, get_completion
 from uagents import Agent, Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
@@ -66,15 +67,11 @@ agent.include(proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: openai_models(OPENAI_API_KEY, model=MODEL_ENGINE),
+    )
 
 
 class HealthCheck(Model):
@@ -100,7 +97,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)

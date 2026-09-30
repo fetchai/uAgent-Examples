@@ -3,7 +3,8 @@ import os
 from enum import Enum
 from typing import Any
 
-from ai import get_completion, get_text_completion
+from agent_health import cached_check, gemini_models
+from ai import GEMINI_API_KEY, MODEL_ENGINE, get_completion, get_text_completion
 from chat_proto import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol, RateLimit, AccessControlList
@@ -84,7 +85,6 @@ async def handle_request(ctx: Context, sender: str, msg: TextPrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-        return
     await ctx.send(sender, TextResponse(text=response))
 
 
@@ -98,7 +98,6 @@ async def handle_codegen_request(ctx: Context, sender: str, msg: CodePrompt):
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-        return
     await ctx.send(sender, CodeResponse(text=response))
 
 
@@ -116,7 +115,6 @@ async def handle_structured_request(
                 error="An error occurred while processing the request. Please try again later."
             ),
         )
-        return
     await ctx.send(sender, StructuredOutputResponse(output=json.loads(response)))
 
 
@@ -127,15 +125,11 @@ agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: gemini_models(GEMINI_API_KEY, model=MODEL_ENGINE),
+    )
 
 
 class HealthCheck(Model):
@@ -161,7 +155,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)

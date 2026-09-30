@@ -1,7 +1,8 @@
 import os
 from enum import Enum
 
-from grammar import check_grammar
+from agent_health import cached_check, sapling_account
+from grammar import SAPLING_API_KEY, check_grammar
 from uagents import Agent, Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
@@ -59,6 +60,10 @@ agent.include(grammar_check_protocol)
 
 
 ### Health check related code
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(ctx, lambda: sapling_account(SAPLING_API_KEY))
+
+
 class HealthCheck(Model):
     pass
 
@@ -80,9 +85,14 @@ health_protocol = QuotaProtocol(
 
 @health_protocol.on_message(HealthCheck, replies={AgentHealth})
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    await ctx.send(
-        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
-    )
+    status = HealthStatus.UNHEALTHY
+    try:
+        if await agent_is_healthy(ctx):
+            status = HealthStatus.HEALTHY
+    except Exception as err:
+        ctx.logger.error(err)
+    finally:
+        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
 
 
 agent.include(health_protocol, publish_manifest=True)

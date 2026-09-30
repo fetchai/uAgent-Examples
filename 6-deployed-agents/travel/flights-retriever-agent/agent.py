@@ -103,17 +103,6 @@ agent.include(proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
-
-
 class HealthCheck(Model):
     pass
 
@@ -135,14 +124,9 @@ health_protocol = QuotaProtocol(
 
 @health_protocol.on_message(HealthCheck, replies={AgentHealth})
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    status = HealthStatus.UNHEALTHY
-    try:
-        if agent_is_healthy():
-            status = HealthStatus.HEALTHY
-    except Exception as err:
-        ctx.logger.error(err)
-    finally:
-        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
+    await ctx.send(
+        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
+    )
 
 
 agent.include(health_protocol, publish_manifest=True)

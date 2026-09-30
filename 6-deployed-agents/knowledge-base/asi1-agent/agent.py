@@ -1,6 +1,8 @@
 import os
 from enum import Enum
 
+from agent_health import cached_check, openai_chat
+from ai import ASI1_API_KEY, ASI1_URL, MODEL_NAME
 from protocols import chat_proto
 from uagents import Agent, Context, Model
 from uagents.experimental.quota import QuotaProtocol
@@ -21,15 +23,15 @@ agent.include(chat_proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: openai_chat(
+            ASI1_API_KEY,
+            model=MODEL_NAME,
+            base_url=ASI1_URL,
+        ),
+    )
 
 
 class HealthCheck(Model):
@@ -55,7 +57,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)

@@ -1,7 +1,9 @@
+import asyncio
 import os
 import time
 from enum import Enum
 
+from agent_health import alpha_vantage, cached_check, openai_models
 import openai
 import requests
 from uagents import Agent, Context, Model
@@ -125,8 +127,20 @@ agent.include(proto, publish_manifest=True)
 
 
 # Health check related code
-def agent_is_healthy():
-    return True
+async def agent_is_healthy(ctx: Context) -> bool:
+    openai_ok, alpha_vantage_ok = await asyncio.gather(
+        cached_check(
+            ctx,
+            lambda: openai_models(OPENAI_API_KEY, model="gpt-3.5-turbo"),
+            cache_key="health_openai",
+        ),
+        cached_check(
+            ctx,
+            lambda: alpha_vantage(ALPHAVANTAGE_API_KEY),
+            cache_key="health_alpha_vantage",
+            ),
+    )
+    return openai_ok and alpha_vantage_ok
 
 
 class HealthCheck(Model):
@@ -152,8 +166,8 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        agent_is_healthy()
-        status = HealthStatus.HEALTHY
+        if await agent_is_healthy(ctx):
+            status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)
     finally:

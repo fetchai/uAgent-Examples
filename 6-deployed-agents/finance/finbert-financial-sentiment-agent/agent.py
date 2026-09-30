@@ -1,12 +1,18 @@
 import os
 from enum import Enum
 
+from agent_health import cached_check, huggingface_account
 from uagents import Agent, Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-from finbert import FinancialSentimentResponse, FinancialSentimentRequest, get_finbert_sentiment
+from finbert import (
+    HUGGINGFACE_API_KEY,
+    FinancialSentimentRequest,
+    FinancialSentimentResponse,
+    get_finbert_sentiment,
+)
 
 AGENT_SEED = os.getenv("AGENT_SEED", "<finbert-sentiment-agent>")
 AGENT_NAME = os.getenv("AGENT_NAME", "Finbert Financial Sentiment Agent")
@@ -36,6 +42,7 @@ async def handle_request(ctx: Context, sender: str, msg: FinancialSentimentReque
     try:
         sentiment = await get_finbert_sentiment(msg.text)
     except Exception as err:
+        ctx.logger.error(f"FinBERT provider request failed: {err}")
         await ctx.send(
             sender,
             ErrorMessage(
@@ -51,15 +58,11 @@ agent.include(proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: huggingface_account(HUGGINGFACE_API_KEY),
+    )
 
 
 class HealthCheck(Model):
@@ -85,7 +88,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)

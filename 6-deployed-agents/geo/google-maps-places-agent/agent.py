@@ -8,6 +8,7 @@ to support other protocols as well.
 import os
 from enum import Enum
 
+from agent_health import cached_check, google_places
 from client import Client
 from communication import POIAreaRequest, POIResponse
 from logic import find_pois
@@ -68,15 +69,12 @@ agent.include(proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: google_places(GOOGLE_API_KEY),
+        cache_key="google_places_dependency_health_v2",
+    )
 
 
 class HealthCheck(Model):
@@ -102,7 +100,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)

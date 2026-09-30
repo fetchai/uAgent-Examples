@@ -1,12 +1,18 @@
 import os
 from enum import Enum
 
+from agent_health import cached_check, google_geocoding
 from uagents import Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-from coordinates import find_coordinates, GeolocationResponse, GeolocationRequest
+from coordinates import (
+    GOOGLE_API_KEY,
+    GeolocationRequest,
+    GeolocationResponse,
+    find_coordinates,
+)
 
 AGENT_SEED = os.getenv("AGENT_SEED", "google-geolocation-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Google API Geolocation Agent")
@@ -50,15 +56,11 @@ agent.include(proto, publish_manifest=True)
 
 
 ### Health check related code
-def agent_is_healthy() -> bool:
-    """
-    Implement the actual health check logic here.
-
-    For example, check if the agent can connect to a third party API,
-    check if the agent has enough resources, etc.
-    """
-    condition = True  # TODO: logic here
-    return bool(condition)
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: google_geocoding(GOOGLE_API_KEY),
+    )
 
 
 class HealthCheck(Model):
@@ -84,7 +86,7 @@ health_protocol = QuotaProtocol(
 async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
     status = HealthStatus.UNHEALTHY
     try:
-        if agent_is_healthy():
+        if await agent_is_healthy(ctx):
             status = HealthStatus.HEALTHY
     except Exception as err:
         ctx.logger.error(err)
