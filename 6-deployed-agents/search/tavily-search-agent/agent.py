@@ -1,11 +1,11 @@
 import os
-from enum import Enum
 from typing import List
 
-from agent_health import cached_check, tavily_account
 import requests
-from uagents import Agent, Context, Model
+from agent_health import tavily_account
+from uagents import Context, Model
 from uagents.experimental.chat_agent import ChatAgent
+from uagents.experimental.health import HealthProtocol, cached_check
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -112,35 +112,18 @@ async def agent_is_healthy(ctx: Context) -> bool:
     return await cached_check(ctx, lambda: tavily_account(TAVILY_API_KEY))
 
 
-class HealthCheck(Model):
-    pass
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=agent_is_healthy,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    status = HealthStatus.UNHEALTHY
-    try:
-        if await agent_is_healthy(ctx):
-            status = HealthStatus.HEALTHY
-    except Exception as err:
-        ctx.logger.error(err)
-    finally:
-        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
 
 
 agent.include(health_protocol, publish_manifest=True)

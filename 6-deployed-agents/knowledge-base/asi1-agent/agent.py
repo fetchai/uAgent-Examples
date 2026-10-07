@@ -1,11 +1,10 @@
 import os
-from enum import Enum
 
-from agent_health import cached_check, openai_chat
+from agent_health import openai_chat
 from ai import ASI1_API_KEY, ASI1_URL, MODEL_NAME
 from protocols import chat_proto
-from uagents import Agent, Context, Model
-from uagents.experimental.quota import QuotaProtocol
+from uagents import Agent, Context
+from uagents.experimental.health import HealthProtocol, cached_check
 
 AGENT_SEED = os.getenv("AGENT_SEED", "asi1-test-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "ASI1-Mini Agent")
@@ -34,35 +33,18 @@ async def agent_is_healthy(ctx: Context) -> bool:
     )
 
 
-class HealthCheck(Model):
-    pass
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=agent_is_healthy,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    status = HealthStatus.UNHEALTHY
-    try:
-        if await agent_is_healthy(ctx):
-            status = HealthStatus.HEALTHY
-    except Exception as err:
-        ctx.logger.error(err)
-    finally:
-        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
 
 
 agent.include(health_protocol, publish_manifest=True)
