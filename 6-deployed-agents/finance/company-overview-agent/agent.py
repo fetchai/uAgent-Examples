@@ -1,13 +1,17 @@
 import os
-import time
-from enum import Enum
 
-from uagents import Context, Model
+from agent_health import alpha_vantage
+from functions import (
+    ALPHAVANTAGE_API_KEY,
+    CompanyOverviewRequest,
+    CompanyOverviewResponse,
+    fetch_overview_json,
+)
+from uagents import Context
 from uagents.experimental.chat_agent import ChatAgent
+from uagents.experimental.health import HealthProtocol, cached_check
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
-
-from functions import CompanyOverviewResponse, CompanyOverviewRequest, fetch_overview_json
 
 AGENT_SEED = os.getenv("AGENT_SEED", "company-overview")
 AGENT_NAME = os.getenv("AGENT_NAME", "Company Overview Agent")
@@ -52,39 +56,25 @@ agent.include(proto, publish_manifest=True)
 
 
 # Health check related code
-def agent_is_healthy():
-    return True
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(
+        ctx,
+        lambda: alpha_vantage(ALPHAVANTAGE_API_KEY),
+    )
 
 
-class HealthCheck(Model):
-    pass
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=agent_is_healthy,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    status = HealthStatus.UNHEALTHY
-    try:
-        agent_is_healthy()
-        status = HealthStatus.HEALTHY
-    except Exception as err:
-        ctx.logger.error(err)
-    finally:
-        await ctx.send(sender, AgentHealth(agent_name=AGENT_NAME, status=status))
 
 
 agent.include(health_protocol, publish_manifest=True)

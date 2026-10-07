@@ -1,5 +1,4 @@
 import os
-from enum import Enum
 
 from models import (
     AssetSignalRequest,
@@ -14,15 +13,16 @@ from models import (
     TickerRequest,
     TickerResponse,
 )
-from uagents import Agent, Context, Model
+from uagents import Context
 from uagents.experimental.chat_agent import ChatAgent
+from uagents.experimental.health import HealthProtocol
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
-COMPANY_TICKER_RESOLVER_AGENT = os.getenv("company-ticker-resolver-agent")
-FINANCIAL_NEWS_SENTIMENT_AGENT = os.getenv("financial-news-sentiment-agent")
-FINBERT_FINANCIAL_SENTIMENT_AGENT = os.getenv("finbert-financial-sentiment-agent")
-STOCK_PRICE_AGENT = os.getenv("stock-price-agent")
+COMPANY_TICKER_RESOLVER_AGENT = os.getenv("COMPANY_TICKER_RESOLVER_AGENT")
+FINANCIAL_NEWS_SENTIMENT_AGENT = os.getenv("FINANCIAL_NEWS_SENTIMENT_AGENT")
+FINBERT_FINANCIAL_SENTIMENT_AGENT = os.getenv("FINBERT_FINANCIAL_SENTIMENT_AGENT")
+STOCK_PRICE_AGENT = os.getenv("STOCK_PRICE_AGENT")
 
 AGENT_SEED = os.getenv("AGENT_SEED", "<your-agent-seed>")
 AGENT_NAME = os.getenv("AGENT_NAME", "Asset Signal Agent")
@@ -116,10 +116,10 @@ async def handle_request(ctx: Context, sender: str, msg: AssetSignalRequest):
         response_type=FinancialSentimentResponse,
     )
     if not isinstance(finbert_reply, FinancialSentimentResponse):
-        await ctx.send(sender, ErrorMessage(error=f"FinBERT failed: {finbert_status}"))
-        return
-
-    s2 = finbert_reply.model_dump()
+        ctx.logger.warning(f"FinBERT unavailable, using news sentiment only: {finbert_status}")
+        s2 = {"positive": 0.0, "neutral": 0.0, "negative": 0.0}
+    else:
+        s2 = finbert_reply.model_dump()
     combined = {
         "BUY": sentiment_summary["positive"] + s2["positive"],
         "WAIT": sentiment_summary["neutral"] + s2["neutral"],
@@ -159,30 +159,18 @@ agent.include(proto, publish_manifest=True)
 
 
 # Health Check code
-class HealthCheck(Model):
-    pass
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=lambda _ctx: True,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    await ctx.send(
-        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
-    )
 
 
 agent.include(health_protocol, publish_manifest=True)

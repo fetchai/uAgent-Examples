@@ -1,4 +1,4 @@
-from typing import List, Literal, Set
+from typing import List, Literal
 
 from uagents import Model
 
@@ -10,7 +10,7 @@ class AssetSignalRequest(Model):
 class AssetSignalResponse(Model):
     signal: Literal["BUY", "SELL", "WAIT"]
     price: float
-    sources: Set[str]
+    sources: List[str]
 
 
 # Ticker Resolver Agent
