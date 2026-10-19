@@ -6,32 +6,32 @@ from urllib.request import Request, urlopen
 PROBE_TIMEOUT_SECONDS = 5
 
 
-def _model_available(model_ids: set[str | None], model: str | None) -> bool:
-    return model is None or any(
-        (
-            model_id == model or (model_id and model_id.startswith(f"{model}-"))
-            for model_id in model_ids
-        )
-    )
-
-
-def openai_models(
+def asi1_chat(
     api_key: str | None,
     *,
-    model: str | None = None,
-    base_url: str = "https://api.openai.com/v1",
+    model: str,
+    base_url: str,
 ) -> bool:
-    url = f"{base_url.rstrip('/')}/models"
+    url = f"{base_url.rstrip('/')}/chat/completions"
+    data = json.dumps(
+        {
+            "model": model,
+            "messages": [{"role": "user", "content": "Reply with OK"}],
+            "max_tokens": 1,
+        }
+    ).encode()
     with urlopen(
         Request(
             url,
+            data=data,
             headers={
                 "User-Agent": "fetch-agent-health/1.0",
                 "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
             },
+            method="POST",
         ),
         timeout=PROBE_TIMEOUT_SECONDS,
     ) as response:
         payload = json.load(response)
-    model_ids = {item.get("id") for item in payload.get("data", [])}
-    return bool(model_ids) and _model_available(model_ids, model)
+    return bool(payload.get("choices"))

@@ -2,9 +2,9 @@ import asyncio
 import os
 import time
 
-import openai
 import requests
-from agent_health import alpha_vantage, openai_models
+from agent_health import alpha_vantage, asi1_chat
+from openai import OpenAI
 from uagents import Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.health import HealthProtocol, cached_check
@@ -14,11 +14,15 @@ from uagents_core.models import ErrorMessage
 AGENT_SEED = os.getenv("AGENT_SEED", "ticker-agent")
 AGENT_NAME = os.getenv("AGENT_NAME", "Company Ticker Resolver Agent")
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+ASI1_API_KEY = os.getenv("ASI1_API_KEY", "")
+ASI1_BASE_URL = os.getenv("ASI1_BASE_URL", "https://api.asi1.ai/v1")
+ASI1_MODEL = os.getenv("ASI1_MODEL", "asi1")
 ALPHAVANTAGE_API_KEY = os.getenv("ALPHAVANTAGE_API_KEY")
 
-if ALPHAVANTAGE_API_KEY is None or OPENAI_API_KEY is None:
-    raise ValueError("You need to provide an API keys for Alpha Vantage and OpenAi.")
+if ALPHAVANTAGE_API_KEY is None or not ASI1_API_KEY:
+    raise ValueError("You need to provide API keys for Alpha Vantage and ASI:One.")
+
+asi1_client = OpenAI(api_key=ASI1_API_KEY, base_url=ASI1_BASE_URL)
 
 
 class TickerRequest(Model):
@@ -48,7 +52,8 @@ proto = QuotaProtocol(
 
 def get_verified_ticker(company_name) -> str:
     """
-    Fetches ticker symbols for a given company name and verifies the most relevant one using OpenAI's GPT-4 model.
+    Fetches ticker symbols for a given company name and verifies the most relevant
+    one using ASI:One.
 
     Args:
         company_name (str): The name of the company to search for.
@@ -76,24 +81,36 @@ def get_verified_ticker(company_name) -> str:
     if not ticker_list:
         return "No ticker symbols found."
 
-    # Verify the correct ticker using OpenAI's gpt-3.5-turbo
-    response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
+    # Verify the correct ticker using ASI:One.
+    response = asi1_client.chat.completions.create(
+        model=ASI1_MODEL,
         messages=[
             {
                 "role": "system",
-                "content": "You are an agent to provide tickers for a given company name. You will get 5 best matching tickers in a list and you have to verify which ticker is right. Just respond always with a ticker. For example: TSLA for Tesla, AAPL for Apple, etc. If the list is empty check ticker for {company_name } and return ticker",
+                "content": (
+                    "Select the ticker that best matches the company name from the "
+                    "provided candidates. Return exactly one candidate ticker and "
+                    "nothing else."
+                ),
             },
             {
                 "role": "user",
-                "content": f"ticker_list : {str(ticker_list)} company name : {company_name}",
+                "content": (
+                    f"Company: {company_name}\nCandidate tickers: {ticker_list}"
+                ),
             },
         ],
+        max_tokens=16,
     )
 
-    # Extract and return the verified ticker
-    verified_ticker = response.choices[0].message.content
-    return verified_ticker
+    verified_ticker = (response.choices[0].message.content or "").strip().upper()
+    matching_ticker = next(
+        (ticker for ticker in ticker_list if ticker.upper() == verified_ticker),
+        None,
+    )
+    if matching_ticker is None:
+        raise ValueError(f"ASI:One returned an unexpected ticker: {verified_ticker!r}")
+    return matching_ticker
 
 
 @proto.on_message(TickerRequest, replies={TickerResponse, ErrorMessage})
@@ -128,33 +145,29 @@ agent.include(proto, publish_manifest=True)
 
 # Health check related code
 async def agent_is_healthy(ctx: Context) -> bool:
-    openai_ok, alpha_vantage_ok = await asyncio.gather(
+    asi1_ok, alpha_vantage_ok = await asyncio.gather(
         cached_check(
             ctx,
-            lambda: openai_models(OPENAI_API_KEY, model="gpt-3.5-turbo"),
-            cache_key="health_openai",
+            lambda: asi1_chat(
+                ASI1_API_KEY,
+                model=ASI1_MODEL,
+                base_url=ASI1_BASE_URL,
+            ),
+            cache_key="health_asi1_api",
         ),
         cached_check(
             ctx,
             lambda: alpha_vantage(ALPHAVANTAGE_API_KEY),
             cache_key="health_alpha_vantage",
-            ),
+        ),
     )
-    return openai_ok and alpha_vantage_ok
-
-
-
-
-
-
+    return asi1_ok and alpha_vantage_ok
 
 
 health_protocol = HealthProtocol(
     agent_name=AGENT_NAME,
     check=agent_is_healthy,
 )
-
-
 
 
 agent.include(health_protocol, publish_manifest=True)

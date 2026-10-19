@@ -1,7 +1,7 @@
 import os
 
-from agent_health import openai_models
-from ai import MODEL_ENGINE, OPENAI_API_KEY, get_completion
+from agent_health import asi1_chat
+from ai import ASI1_API_KEY, ASI1_BASE_URL, ASI1_MODEL, get_completion
 from uagents import Context, Model
 from uagents.experimental.chat_agent import ChatAgent
 from uagents.experimental.health import HealthProtocol, cached_check
@@ -58,22 +58,19 @@ agent.include(proto, publish_manifest=True)
 async def agent_is_healthy(ctx: Context) -> bool:
     return await cached_check(
         ctx,
-        lambda: openai_models(OPENAI_API_KEY, model=MODEL_ENGINE),
+        lambda: asi1_chat(
+            ASI1_API_KEY,
+            model=ASI1_MODEL,
+            base_url=ASI1_BASE_URL,
+        ),
+        cache_key="health_asi1_api",
     )
-
-
-
-
-
-
 
 
 health_protocol = HealthProtocol(
     agent_name=AGENT_NAME,
     check=agent_is_healthy,
 )
-
-
 
 
 agent.include(health_protocol, publish_manifest=True)

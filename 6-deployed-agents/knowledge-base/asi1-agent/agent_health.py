@@ -6,13 +6,17 @@ from urllib.request import Request, urlopen
 PROBE_TIMEOUT_SECONDS = 5
 
 
-def openai_chat(api_key: str | None, *, model: str, base_url: str) -> bool:
-    """Run a one-token canary for compatible providers without a models endpoint."""
+def asi1_chat(
+    api_key: str | None,
+    *,
+    model: str,
+    base_url: str,
+) -> bool:
     url = f"{base_url.rstrip('/')}/chat/completions"
     data = json.dumps(
         {
             "model": model,
-            "messages": [{"role": "user", "content": "OK"}],
+            "messages": [{"role": "user", "content": "Reply with OK"}],
             "max_tokens": 1,
         }
     ).encode()
