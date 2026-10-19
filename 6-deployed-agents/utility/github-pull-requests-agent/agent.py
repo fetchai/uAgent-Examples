@@ -1,9 +1,10 @@
 import os
-from enum import Enum
 
 import requests
-from uagents import Agent, Context, Model
+from agent_health import github_api
+from uagents import Context, Model
 from uagents.experimental.chat_agent import ChatAgent
+from uagents.experimental.health import HealthProtocol, cached_check
 from uagents.experimental.quota import QuotaProtocol, RateLimit
 from uagents_core.models import ErrorMessage
 
@@ -121,30 +122,22 @@ agent.include(github_pr_protocol)
 
 
 ### Health check related code
-class HealthCheck(Model):
-    pass
+async def agent_is_healthy(ctx: Context) -> bool:
+    return await cached_check(ctx, github_api)
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+
+
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=agent_is_healthy,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    await ctx.send(
-        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
-    )
 
 
 agent.include(health_protocol, publish_manifest=True)

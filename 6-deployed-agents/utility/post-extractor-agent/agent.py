@@ -1,10 +1,10 @@
 import os
+
 import requests
-from enum import Enum
-from datetime import datetime
-from uagents import Agent, Context, Model, Protocol
+from uagents import Context, Model, Protocol
 from uagents.experimental.chat_agent import ChatAgent
-from uagents.experimental.quota import QuotaProtocol, RateLimit
+from uagents.experimental.health import HealthProtocol
+
 
 class RedditPostsRequest(Model):
     limit: int
@@ -98,30 +98,18 @@ agent.include(proto)
 
 
 # Health Check code
-class HealthCheck(Model):
-    pass
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=lambda _ctx: True,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    await ctx.send(
-        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
-    )
 
 
 agent.include(health_protocol, publish_manifest=True)

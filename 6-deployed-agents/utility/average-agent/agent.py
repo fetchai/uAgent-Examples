@@ -1,11 +1,11 @@
 import os
 import statistics
-from enum import Enum
 
 from average import get_statistics
 from messages import Prompt, Response
-from uagents import Agent, Context, Model
+from uagents import Context
 from uagents.experimental.chat_agent import ChatAgent
+from uagents.experimental.health import HealthProtocol
 from uagents.experimental.quota import QuotaProtocol
 from uagents_core.models import ErrorMessage
 
@@ -50,30 +50,18 @@ agent.include(proto, publish_manifest=True)
 
 
 # Health Check code
-class HealthCheck(Model):
-    pass
 
 
-class HealthStatus(str, Enum):
-    HEALTHY = "healthy"
-    UNHEALTHY = "unhealthy"
 
 
-class AgentHealth(Model):
-    agent_name: str
-    status: HealthStatus
 
 
-health_protocol = QuotaProtocol(
-    storage_reference=agent.storage, name="HealthProtocol", version="0.1.0"
+health_protocol = HealthProtocol(
+    agent_name=AGENT_NAME,
+    check=lambda _ctx: True,
 )
 
 
-@health_protocol.on_message(HealthCheck, replies={AgentHealth})
-async def handle_health_check(ctx: Context, sender: str, msg: HealthCheck):
-    await ctx.send(
-        sender, AgentHealth(agent_name=AGENT_NAME, status=HealthStatus.HEALTHY)
-    )
 
 
 agent.include(health_protocol, publish_manifest=True)

@@ -3,26 +3,25 @@ import os
 
 import requests
 
-OPENAI_URL = "https://api.openai.com/v1/chat/completions"
-MODEL_ENGINE = os.getenv("MODEL_ENGINE", "gpt-5.4-mini")
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "YOUR_OPENAI_API_KEY")
+ASI1_BASE_URL = os.getenv("ASI1_BASE_URL", "https://api.asi1.ai/v1")
+ASI1_URL = f"{ASI1_BASE_URL.rstrip('/')}/chat/completions"
+ASI1_MODEL = os.getenv("ASI1_MODEL", "asi1")
+ASI1_API_KEY = os.getenv("ASI1_API_KEY", "")
 MAX_TOKENS = int(os.getenv("MAX_TOKENS", "1024"))
 HEADERS = {
     "Content-Type": "application/json",
-    "Authorization": f"Bearer {OPENAI_API_KEY}",
+    "Authorization": f"Bearer {ASI1_API_KEY}",
 }
 
 
-if OPENAI_API_KEY is None or OPENAI_API_KEY == "YOUR_OPENAI_API_KEY":
-    raise ValueError(
-        "You need to provide an API key: https://platform.openai.com/api-keys"
-    )
+if not ASI1_API_KEY:
+    raise ValueError("You need to provide an ASI:One API key.")
 
 
 # Send a prompt and context to the AI model and return the content of the completion
 def get_completion(prompt: str, max_tokens: int = MAX_TOKENS) -> str:
     data = {
-        "model": MODEL_ENGINE,
+        "model": ASI1_MODEL,
         "messages": [
             {
                 "role": "system",
@@ -35,7 +34,7 @@ def get_completion(prompt: str, max_tokens: int = MAX_TOKENS) -> str:
 
     try:
         response = requests.post(
-            OPENAI_URL, headers=HEADERS, data=json.dumps(data), timeout=120
+            ASI1_URL, headers=HEADERS, data=json.dumps(data), timeout=120
         )
     except requests.exceptions.Timeout:
         return "The request timed out. Please try again."
