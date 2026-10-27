@@ -74,9 +74,9 @@ def get_verified_ticker(company_name) -> str:
     if not ticker_list:
         return "No ticker symbols found."
 
-    # Verify the correct ticker using OpenAI's gpt-3.5-turbo
+    # Verify the correct ticker using OpenAI's gpt-5.6-terra
     response = openai.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-5.6-terra",
         messages=[
             {
                 "role": "system",
